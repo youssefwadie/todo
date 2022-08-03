@@ -2,7 +2,7 @@ package com.github.youssefwadie.todo.services;
 
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.model.User;
-import com.github.youssefwadie.todo.repositories.UserRepository;
+import com.github.youssefwadie.todo.dao.user.UserDao;
 import com.github.youssefwadie.todo.util.BasicValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,12 +12,12 @@ import java.util.Map;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    private final UserDao userDao;
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -26,11 +26,11 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 
         user.setPassword(encodedPassword);
-        return userRepository.save(user);
+        return userDao.save(user);
     }
 
     public boolean existsById(Long userId) {
-        return userRepository.existsById(userId);
+        return userDao.existsById(userId);
     }
 
 
@@ -40,7 +40,7 @@ public class UserService {
         if (!BasicValidator.isValidEmail(userEmail)) {
             errors.put("email", "Not a valid email");
         } else {
-            boolean emailAlreadyExists = userRepository.existsByEmail(userEmail);
+            boolean emailAlreadyExists = userDao.existsByEmail(userEmail);
             if (emailAlreadyExists) {
                 errors.put("email", "the email %s is already owned by another account".formatted(userEmail));
             }

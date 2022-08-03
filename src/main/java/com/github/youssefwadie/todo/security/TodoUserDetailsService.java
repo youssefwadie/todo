@@ -1,7 +1,8 @@
 package com.github.youssefwadie.todo.security;
 
 
-import com.github.youssefwadie.todo.repositories.UserRepository;
+import com.github.youssefwadie.todo.dao.user.UserDao;
+import com.github.youssefwadie.todo.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,15 +12,15 @@ import java.util.Optional;
 
 @Service
 public class TodoUserDetailsService implements UserDetailsService {
-    private final UserRepository repository;
+    private final UserDao repository;
 
-    public TodoUserDetailsService(UserRepository repository) {
+    public TodoUserDetailsService(UserDao repository) {
         this.repository = repository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<com.github.youssefwadie.todo.model.User> userByEmail = repository.findByEmail(email);
+        Optional<User> userByEmail = repository.findByEmail(email);
         if (userByEmail.isEmpty()) {
             throw new UsernameNotFoundException("No user name with email: %s was founded.".formatted(email));
         }

@@ -2,7 +2,7 @@ package com.github.youssefwadie.todo.services;
 
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.model.Todo;
-import com.github.youssefwadie.todo.repositories.TodoRepository;
+import com.github.youssefwadie.todo.dao.todo.TodoDao;
 import com.github.youssefwadie.todo.util.BasicValidator;
 import org.springframework.stereotype.Service;
 
@@ -13,22 +13,22 @@ import java.util.Objects;
 
 @Service
 public class TodoService {
-    private final TodoRepository todoRepository;
+    private final TodoDao todoDao;
 
     private final UserService userService;
 
-    public TodoService(TodoRepository todoRepository, UserService userService) {
-        this.todoRepository = todoRepository;
+    public TodoService(TodoDao todoDao, UserService userService) {
+        this.todoDao = todoDao;
         this.userService = userService;
     }
 
     public List<Todo> findAll(Long userId) {
-        return todoRepository.findAllByUserId(userId);
+        return todoDao.findAllByUserId(userId);
     }
 
     public Todo save(Todo todo) throws ConstraintsViolationException {
         validateTodo(todo);
-        return todoRepository.save(todo);
+        return todoDao.save(todo);
     }
 
     public void validateTodo(Todo todo) throws ConstraintsViolationException{

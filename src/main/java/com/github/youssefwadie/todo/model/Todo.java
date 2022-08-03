@@ -7,31 +7,29 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "todos")
 public class Todo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Todo() {
     }
 
+    public Todo(Long id, String title, String description, Long userId, LocalDateTime deadTime) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.userId = userId;
+        this.deadTime = deadTime;
+    }
 
-    @Column(name = "title", length = 512)
     private String title;
 
-    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @JsonIgnore
-    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "dead_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd:HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

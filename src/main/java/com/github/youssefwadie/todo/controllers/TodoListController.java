@@ -5,7 +5,6 @@ import com.github.youssefwadie.todo.model.Todo;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.services.TodoService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +36,7 @@ public class TodoListController {
     }
 
     @PostMapping(path = "/create", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> createTodo(@RequestBody Todo todo) throws URISyntaxException, ConstraintViolationException {
+    public ResponseEntity<?> createTodo(@RequestBody Todo todo) throws URISyntaxException {
         try {
             User loggedUser = getLoggedUser();
 
