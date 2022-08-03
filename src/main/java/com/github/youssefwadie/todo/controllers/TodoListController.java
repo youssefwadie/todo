@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping(value = "/api/v1/todo", produces = "application/json")
+@RequestMapping(path = "/todo", produces = "application/json")
 public class TodoListController {
 
     private final TodoService todoService;
@@ -37,7 +37,7 @@ public class TodoListController {
         return loggedInPrincipal.getUser();
     }
 
-    @PostMapping(value = "/create", produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "/create", produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> createTodo(@RequestBody Todo todo) throws URISyntaxException, ConstraintViolationException {
         try {
             User loggedUser = getLoggedUser();

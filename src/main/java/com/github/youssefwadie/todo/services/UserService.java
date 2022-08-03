@@ -35,17 +35,20 @@ public class UserService {
 
 
     public void validateUser(User user) throws ConstraintsViolationException {
-        Map<String, String> errors = new HashMap<>();
-        if (!BasicValidator.isValidEmail(user.getEmail())) {
+        final Map<String, String> errors = new HashMap<>();
+        final String userEmail = user.getEmail();
+        if (!BasicValidator.isValidEmail(userEmail)) {
             errors.put("email", "Not a valid email");
-        }
-        if (BasicValidator.isBlank(user.getPassword())) {
-            errors.put("password", "The password cannot be blank");
+        } else {
+            boolean emailAlreadyExists = userRepository.existsByEmail(userEmail);
+            if (emailAlreadyExists) {
+                errors.put("email", "the email %s is already owned by another account".formatted(userEmail));
+            }
         }
 
         // new user
 //        if (user.getId() == null) {
-            // TODO: check password
+        // TODO: check password
 //        }
         if (!errors.isEmpty()) {
             throw new ConstraintsViolationException(errors);
