@@ -1,11 +1,10 @@
 app:
   datasource:
-    main:
-      driver-class-name: org.mariadb.jdbc.Driver
-      jdbc-url: jdbc:mariadb://localhost:3306/todo
-      username: appuser
-      password: password
-      pool-size: 30
+    driver-class-name: org.mariadb.jdbc.Driver
+    jdbc-url: jdbc:mariadb://localhost:3306/todo
+    username: appuser
+    password: password
+    pool-size: 15
 
 server:
   port: 8080
