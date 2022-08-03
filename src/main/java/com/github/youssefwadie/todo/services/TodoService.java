@@ -6,7 +6,10 @@ import com.github.youssefwadie.todo.repositories.TodoRepository;
 import com.github.youssefwadie.todo.util.BasicValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class TodoService {

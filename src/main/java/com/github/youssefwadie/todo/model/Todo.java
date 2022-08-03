@@ -9,8 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 @Entity
 @Table(name = "todos")
