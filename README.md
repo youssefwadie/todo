@@ -1,2 +1,2 @@
 # todo
-A Simple Todo Application Spring Boot and Angular
+A Simple Todo Application Spring Boot and Angular.
