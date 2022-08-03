@@ -17,10 +17,6 @@ public class TodoUserDetails implements UserDetails {
         return user;
     }
 
-    public Long getId() {
-        return user.getId();
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
