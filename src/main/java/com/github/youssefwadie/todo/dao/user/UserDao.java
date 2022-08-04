@@ -40,7 +40,7 @@ public interface UserDao {
      * Retrieves a {@link User user} by their id.
      *
      * @param id must not be {@literal null}.
-     * @return the user with the given email or {@link Optional#empty()} if non found.
+     * @return the user with the given email or {@literal  Optional#empty()} if non found.
      * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
     @Transactional(readOnly = true)
