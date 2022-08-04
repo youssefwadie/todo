@@ -10,12 +10,12 @@ import java.util.Optional;
 @Repository
 public interface UserDao {
     /**
-     * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
-     * entity instance completely.
+     * Saves a given user. Use the returned instance for further operations as the save operation might have changed the
+     * user instance completely.
      *
      * @param user must not be {@literal null}.
      * @return the saved user; will never be {@literal null}.
-     * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
     @Transactional
     @Modifying
@@ -41,7 +41,7 @@ public interface UserDao {
      *
      * @param id must not be {@literal null}.
      * @return the user with the given email or {@link Optional#empty()} if non found.
-     * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
     @Transactional(readOnly = true)
     Optional<User> findById(Long id);
@@ -133,7 +133,7 @@ public interface UserDao {
      *
      * @param email must not be {@literal null}.
      * @return the user with the given email or {@link Optional#empty()} if non found.
-     * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
     @Transactional(readOnly = true)
     Optional<User> findByEmail(String email);
@@ -143,7 +143,7 @@ public interface UserDao {
      * Returns whether user with the given id exists.
      *
      * @param id must not be {@literal null}.
-     * @return {@literal true} if an entity with the given id exists, {@literal false} otherwise.
+     * @return {@literal true} if a user with the given id exists, {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */
     @Transactional(readOnly = true)
