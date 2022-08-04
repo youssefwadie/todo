@@ -14,6 +14,7 @@ import java.util.List;
 @Repository
 public class TodoDaoImpl implements TodoDao {
     private final JdbcTemplate jdbcTemplate;
+    private final TodoRowMapper todoRowMapper;
 
     public static final String QUERY_TODO_BY_USER_ID = "SELECT * FROM todos WHERE user_id = ?";
     public static final String INSERT_TODO = "INSERT INTO todos" +
@@ -21,13 +22,14 @@ public class TodoDaoImpl implements TodoDao {
             " VALUES (?, ?, ?, ?)";
     public static final String QUERY_TODO_BY_ID = "SELECT * FROM todos WHERE id = ?";
 
-    public TodoDaoImpl(JdbcTemplate jdbcTemplate) {
+    public TodoDaoImpl(JdbcTemplate jdbcTemplate, TodoRowMapper todoRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.todoRowMapper = todoRowMapper;
     }
 
     @Override
     public List<Todo> findAllByUserId(Long userId) {
-        return jdbcTemplate.query(QUERY_TODO_BY_USER_ID, new TodoRowMapper(), userId);
+        return jdbcTemplate.query(QUERY_TODO_BY_USER_ID, todoRowMapper, userId);
     }
 
     @Override
@@ -43,6 +45,6 @@ public class TodoDaoImpl implements TodoDao {
         }, keyHolder);
         Long updatedTodoId = keyHolder.getKey() != null ? keyHolder.getKey().longValue() : todo.getId();
 
-        return jdbcTemplate.queryForObject(QUERY_TODO_BY_ID, new TodoRowMapper(), updatedTodoId);
+        return jdbcTemplate.queryForObject(QUERY_TODO_BY_ID, todoRowMapper, updatedTodoId);
     }
 }

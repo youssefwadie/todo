@@ -2,9 +2,6 @@ package com.github.youssefwadie.todo.model;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
 
 public class User {

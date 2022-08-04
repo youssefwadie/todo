@@ -2,11 +2,13 @@ package com.github.youssefwadie.todo.dao.todo;
 
 import com.github.youssefwadie.todo.model.Todo;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
+@Component
 public class TodoRowMapper implements RowMapper<Todo> {
     @Override
     public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
