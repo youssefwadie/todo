@@ -52,6 +52,7 @@ public interface UserDao {
      *
      * @return all users
      */
+    @Transactional(readOnly = true)
     Iterable<User> findAll();
 
     /**
@@ -66,6 +67,7 @@ public interface UserDao {
      * @throws IllegalArgumentException in case the given {@link Iterable ids} or one of its items is {@literal null}.
      */
 
+    @Transactional(readOnly = true)
     Iterable<User> findAllById(Iterable<Long> ids);
 
     /**
