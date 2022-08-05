@@ -1,11 +1,12 @@
 package com.github.youssefwadie.todo.dao.user;
 
-import com.github.youssefwadie.todo.model.User;
+import java.util.Optional;
+
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.github.youssefwadie.todo.model.User;
 
 @Repository
 public interface UserDao {
@@ -40,7 +41,7 @@ public interface UserDao {
      * Retrieves a {@link User user} by their id.
      *
      * @param id must not be {@literal null}.
-     * @return the user with the given email or {@literal  Optional#empty()} if non found.
+     * @return the user with the given id or {@literal  Optional#empty()} if non found.
      * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
     @Transactional(readOnly = true)
@@ -58,7 +59,7 @@ public interface UserDao {
     /**
      * Returns all {@link User users} with the given IDs.
      * <p>
-     * If some or all ids are not found, no entities are returned for these IDs.
+     * If some or all ids are not found, no users are returned for these IDs.
      * <p>
      *
      * @param ids must not be {@literal null} nor contain any {@literal null} values.
@@ -92,8 +93,7 @@ public interface UserDao {
      * Deletes the given user.
      *
      * @param user must not be {@literal null}.
-     * @throws IllegalArgumentException in case the given {@literal user} is {@literal null} or
-     *                                  {@literal the user's} email and password are {@literal null}
+     * @throws IllegalArgumentException in case the given {@literal user} is {@literal null} or {@literal not null} but {@literal the user's} email and password are {@literal null}
      */
     @Transactional
     @Modifying
@@ -103,7 +103,7 @@ public interface UserDao {
      * Deletes all {@link User users} with the given IDs.
      *
      * @param ids must not be {@literal null}. Must not contain {@literal null} elements.
-     * @throws IllegalArgumentException in case the given {@literal ids} or one of its elements is {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal ids} or one of its users is {@literal null}.
      */
 
     @Transactional
@@ -117,7 +117,6 @@ public interface UserDao {
      * @param users must not be {@literal null}. Must not contain {@literal null} elements.
      * @throws IllegalArgumentException in case the given {@literal users} or one of the users is {@literal null}.
      */
-
     @Transactional
     @Modifying
     void deleteAll(Iterable<? extends User> users);

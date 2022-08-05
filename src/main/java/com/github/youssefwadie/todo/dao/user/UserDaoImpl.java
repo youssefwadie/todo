@@ -1,8 +1,12 @@
 package com.github.youssefwadie.todo.dao.user;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.github.youssefwadie.todo.model.User;
-import com.github.youssefwadie.todo.util.BasicValidator;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.util.Streamable;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
@@ -13,29 +17,25 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.github.youssefwadie.todo.model.User;
+import com.github.youssefwadie.todo.util.BasicValidator;
 
 @Repository
 @Primary
 public class UserDaoImpl implements UserDao {
     public static final String INSERT_USER_TEMPLATE = "INSERT INTO users (email, password) VALUES (?, ?)";
-    public static final String QUERY_FIND_USER_BY_ID_TEMPLATE = "SELECT * FROM users WHERE id = ?";
-    public static final String QUERY_FIND_USER_BY_EMAIL_TEMPLATE = "SELECT * FROM users WHERE email = ?";
-    public static final String QUERY_CHECK_IF_USER_EXISTS_BY_EMAIL_TEMPLATE = "SELECT COUNT(id) > 0 FROM users WHERE email = ?";
-    public static final String QUERY_CHECK_IF_USER_EXISTS_BY_ID_TEMPLATE = "SELECT COUNT(id) > 0 FROM users WHERE id = ?";
-    public static final String QUERY_COUNT_ALL_USERS = "SELECT COUNT(*) FROM users";
+    public static final String QUERY_FIND_BY_ID_TEMPLATE = "SELECT * FROM users WHERE id = ?";
+    public static final String QUERY_FIND_BY_EMAIL_TEMPLATE = "SELECT * FROM users WHERE email = ?";
+    public static final String QUERY_CHECK_IF_EXISTS_BY_EMAIL_TEMPLATE = "SELECT COUNT(id) > 0 FROM users WHERE email = ?";
+    public static final String QUERY_CHECK_IF_EXISTS_BY_ID_TEMPLATE = "SELECT COUNT(id) > 0 FROM users WHERE id = ?";
+    public static final String QUERY_COUNT_ALL = "SELECT COUNT(*) FROM users";
 
-    public static final String QUERY_FIND_ALL_USERS_TEMPLATE = "SELECT * FROM users";
+    public static final String QUERY_FIND_ALL = "SELECT * FROM users";
 
-    public static final String DELETE_USER_BY_ID_TEMPLATE = "DELETE FROM users WHERE id = ?1";
-    public static final String DELETE_USER_BY_EMAIL_TEMPLATE = "DELETE FROM users WHERE email = ?1";
+    public static final String DELETE_BY_ID_TEMPLATE = "DELETE FROM users WHERE id = ?1";
+    public static final String DELETE_BY_EMAIL_TEMPLATE = "DELETE FROM users WHERE email = ?1";
 
-    public static final String DELETE_ALL_USERS = "DELETE FROM users";
+    public static final String DELETE_ALL = "DELETE FROM users";
 
     private final JdbcTemplate jdbcTemplate;
     private final UserRowMapper rowMapper;
@@ -48,7 +48,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findByEmail(String email) {
         Assert.notNull(email, "Email must not be null!");
-        User user = jdbcTemplate.queryForObject(QUERY_FIND_USER_BY_EMAIL_TEMPLATE, rowMapper, email);
+        User user = jdbcTemplate.queryForObject(QUERY_FIND_BY_EMAIL_TEMPLATE, rowMapper, email);
         if (user == null) {
             return Optional.empty();
         } else {
@@ -69,7 +69,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findById(Long id) {
         Assert.notNull(id, "Id must not be null!");
-        User user = jdbcTemplate.queryForObject(QUERY_FIND_USER_BY_ID_TEMPLATE, rowMapper, id);
+        User user = jdbcTemplate.queryForObject(QUERY_FIND_BY_ID_TEMPLATE, rowMapper, id);
         if (user == null) {
             return Optional.empty();
         }
@@ -80,12 +80,12 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean existsById(Long id) {
         Assert.notNull(id, "Id must not be null!");
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(QUERY_CHECK_IF_USER_EXISTS_BY_ID_TEMPLATE, Boolean.class, id));
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(QUERY_CHECK_IF_EXISTS_BY_ID_TEMPLATE, Boolean.class, id));
     }
 
     @Override
     public Iterable<User> findAll() {
-        return jdbcTemplate.query(QUERY_FIND_ALL_USERS_TEMPLATE, rowMapper);
+        return jdbcTemplate.query(QUERY_FIND_ALL, rowMapper);
     }
 
     @Override
@@ -97,15 +97,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public long count() {
-        Long usersCount = jdbcTemplate.queryForObject(QUERY_COUNT_ALL_USERS, Long.class);
+        Long usersCount = jdbcTemplate.queryForObject(QUERY_COUNT_ALL, Long.class);
         return usersCount == null ? 0 : usersCount;
     }
 
     @Override
     public void deleteById(Long id) {
         Assert.notNull(id, "Id must not be null!");
-        // TODO: delete all the todos of this user
-        jdbcTemplate.update(DELETE_USER_BY_ID_TEMPLATE, id);
+        jdbcTemplate.update(DELETE_BY_ID_TEMPLATE, id);
     }
 
     @Override
@@ -135,19 +134,19 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.update(DELETE_ALL_USERS);
+        jdbcTemplate.update(DELETE_ALL);
     }
 
     @Override
     public boolean existsByEmail(String email) {
         Assert.notNull(email, "Email must not be null!");
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(QUERY_CHECK_IF_USER_EXISTS_BY_EMAIL_TEMPLATE, Boolean.class, email));
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(QUERY_CHECK_IF_EXISTS_BY_EMAIL_TEMPLATE, Boolean.class, email));
     }
 
     @Override
     public void deleteByEmail(String email) {
         Assert.notNull(email, "Email must not be null!");
-        jdbcTemplate.update(DELETE_USER_BY_EMAIL_TEMPLATE, email);
+        jdbcTemplate.update(DELETE_BY_EMAIL_TEMPLATE, email);
     }
 
     @Override

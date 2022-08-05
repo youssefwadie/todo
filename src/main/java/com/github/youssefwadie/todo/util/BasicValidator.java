@@ -1,8 +1,8 @@
 package com.github.youssefwadie.todo.util;
 
-import org.apache.commons.validator.routines.EmailValidator;
-
 import java.time.LocalDateTime;
+
+import org.apache.commons.validator.routines.EmailValidator;
 
 public class BasicValidator {
     private static final EmailValidator emailValidator = EmailValidator.getInstance(true);

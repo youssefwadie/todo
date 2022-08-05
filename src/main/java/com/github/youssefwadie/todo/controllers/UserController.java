@@ -1,14 +1,15 @@
 package com.github.youssefwadie.todo.controllers;
 
-import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
-import com.github.youssefwadie.todo.model.User;
-import com.github.youssefwadie.todo.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
+import com.github.youssefwadie.todo.model.User;
+import com.github.youssefwadie.todo.services.UserService;
 
 @RestController
 @RequestMapping(path = "/users")

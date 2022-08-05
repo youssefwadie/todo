@@ -1,15 +1,16 @@
 package com.github.youssefwadie.todo.services;
 
-import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
-import com.github.youssefwadie.todo.model.Todo;
-import com.github.youssefwadie.todo.dao.todo.TodoDao;
-import com.github.youssefwadie.todo.util.BasicValidator;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+
+import com.github.youssefwadie.todo.dao.todo.TodoDao;
+import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
+import com.github.youssefwadie.todo.model.Todo;
+import com.github.youssefwadie.todo.util.BasicValidator;
 
 @Service
 public class TodoService {
@@ -23,7 +24,7 @@ public class TodoService {
     }
 
     public List<Todo> findAll(Long userId) {
-        return todoDao.findAllByUserId(userId);
+        return (List<Todo>) todoDao.findAllByUserId(userId);
     }
 
     public Todo save(Todo todo) throws ConstraintsViolationException {

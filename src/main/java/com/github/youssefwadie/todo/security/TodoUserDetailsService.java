@@ -1,15 +1,15 @@
 package com.github.youssefwadie.todo.security;
 
 
-import com.github.youssefwadie.todo.dao.user.UserDao;
-import com.github.youssefwadie.todo.model.User;
+import java.util.Optional;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import java.util.Optional;
+import com.github.youssefwadie.todo.dao.user.UserDao;
+import com.github.youssefwadie.todo.model.User;
 
 @Service
 public class TodoUserDetailsService implements UserDetailsService {
