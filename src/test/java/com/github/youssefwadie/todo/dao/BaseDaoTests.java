@@ -5,8 +5,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.annotation.Rollback;
 
-@ComponentScan(basePackages = {"com.github.youssefwadie.todo.config", "com.github.youssefwadie.todo.dao",
-        "com.github.youssefwadie.todo.services"})
+@ComponentScan(basePackages = {"com.github.youssefwadie.todo.config", "com.github.youssefwadie.todo.dao"})
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback

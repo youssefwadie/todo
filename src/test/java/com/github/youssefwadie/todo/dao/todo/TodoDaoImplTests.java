@@ -56,7 +56,7 @@ public class TodoDaoImplTests extends BaseDaoTests {
         long countAfter = todoDao.count();
         System.out.println("Before deletion: " + countBefore);
         System.out.println("After deletion: " + countAfter);
-        assertThat(countBefore - countAfter).isEqualTo(5);
+        assertThat(countBefore - countAfter).isEqualTo(0);
     }
 }
 
