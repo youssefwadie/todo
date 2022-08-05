@@ -1,0 +1,40 @@
+<div class="container">
+  <form class="row" #loginForm="ngForm">
+    <div class="col-lg-6 offset-lg-3 p-3">
+      <div class="form-group">
+        <input
+          type="email"
+          pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+(\.[a-z]{2,4})+$"
+          class="form-control rounded p-2 mb-2"
+          id="email"
+          [(ngModel)]="user.email"
+          #emailField="ngModel"
+          name="email"
+          placeholder="Email Address"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <input
+          type="password"
+          class="form-control rounded p-2 mb-2"
+          id="password"
+          [(ngModel)]="user.password"
+          #passwordField="ngModel"
+          name="password"
+          placeholder="Password"
+          required
+          pattern=".{4,}"
+        />
+      </div>
+      <button
+        type="button"
+        class="btn btn-primary btn-full mt-3"
+        [disabled]="loginForm.invalid"
+        (click)="onLogin()"
+      >
+        Log In
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,9 @@
+input.ng-invalid.ng-touched {
+  border: 2px solid #f00;
+}
+
+button.btn-full {
+  width: 100%;
+  font-size: 1.2em;
+  font-weight: bold;
+}
