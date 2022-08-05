@@ -11,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.github.youssefwadie.todo.dao.todo.TodoDaoImpl;
-import com.github.youssefwadie.todo.dao.user.UserDaoImpl;
+import com.github.youssefwadie.todo.dao.todo.TodoDao;
+import com.github.youssefwadie.todo.dao.user.UserDao;
 import com.github.youssefwadie.todo.model.User;
 
 
@@ -21,10 +21,10 @@ import com.github.youssefwadie.todo.model.User;
 public class UserServiceTests {
 
     @MockBean
-    UserDaoImpl userDao;
+    UserDao userDao;
 
     @MockBean
-    TodoDaoImpl todoDao;
+    TodoDao todoDao;
 
     @MockBean
     PasswordEncoder passwordEncoder;
@@ -54,7 +54,7 @@ public class UserServiceTests {
         
         userService.deleteUser(user);
         Mockito.verify(todoDao, Mockito.times(1)).deleteAllByUserId(userId);
-
+        Mockito.verify(userDao, Mockito.times(1)).delete(user);
     }
 
     @Test
