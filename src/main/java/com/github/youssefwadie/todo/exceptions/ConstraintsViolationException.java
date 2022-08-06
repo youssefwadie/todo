@@ -1,10 +1,10 @@
 package com.github.youssefwadie.todo.exceptions;
 
-import java.io.Serial;
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.io.Serial;
+import java.util.Map;
 
 @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED)
 public class ConstraintsViolationException extends Exception {

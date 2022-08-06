@@ -1,17 +1,16 @@
 package com.github.youssefwadie.todo.services;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.github.youssefwadie.todo.dao.todo.TodoDao;
 import com.github.youssefwadie.todo.dao.user.UserDao;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.exceptions.UserNotFoundException;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.util.BasicValidator;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -69,6 +68,11 @@ public class UserService {
             throw new ConstraintsViolationException(errors);
         }
     }
+
+	public User findByEmail(String email) throws UserNotFoundException {
+		return userDao.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("No User with email: %s was found!".formatted(email)));
+	}
 
 
 }
