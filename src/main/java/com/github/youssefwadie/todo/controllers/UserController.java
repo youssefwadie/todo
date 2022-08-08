@@ -25,10 +25,10 @@ public class UserController {
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<User> login() {
         TodoUserDetails loggedInPrincipal = (TodoUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	return ResponseEntity.status(HttpStatus.OK).body(loggedInPrincipal.getUser());
+        return ResponseEntity.status(HttpStatus.OK).body(loggedInPrincipal.getUser());
     }
 
-    
+
     @PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {

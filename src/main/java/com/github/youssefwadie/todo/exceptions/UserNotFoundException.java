@@ -4,9 +4,9 @@ import java.io.Serial;
 
 public class UserNotFoundException extends Exception {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 5086046763662803426L;
-	
+
     public UserNotFoundException() {
     }
 

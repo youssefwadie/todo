@@ -20,48 +20,48 @@ import java.util.Collections;
 @EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
-	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http.cors().configurationSource(request -> {
-			CorsConfiguration configuration = new CorsConfiguration();
-			configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-			configuration.setAllowCredentials(true);
-			configuration.setAllowedHeaders(Collections.singletonList("*"));
-			configuration.setAllowedMethods(Collections.singletonList("*"));
+        http.cors().configurationSource(request -> {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+            configuration.setAllowCredentials(true);
+            configuration.setAllowedHeaders(Collections.singletonList("*"));
+            configuration.setAllowedMethods(Collections.singletonList("*"));
             configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-			configuration.setMaxAge(3600L);
-			return configuration;
-		});
+            configuration.setMaxAge(3600L);
+            return configuration;
+        });
 
-		http.csrf().disable();
-		
-		http.addFilterBefore(jwtValidatorFilter(), BasicAuthenticationFilter.class);
-		http.addFilterAfter(jwtGeneratorFilter(), BasicAuthenticationFilter.class);
-		http.authorizeRequests();
+        http.csrf().disable();
 
-		http.authorizeRequests(request -> {
-			request.antMatchers("/api/v1/users/create").permitAll();
-			request.anyRequest().authenticated();
-		});
-		http.formLogin();
-		http.httpBasic();
-		return http.build();
-	}
+        http.addFilterBefore(jwtValidatorFilter(), BasicAuthenticationFilter.class);
+        http.addFilterAfter(jwtGeneratorFilter(), BasicAuthenticationFilter.class);
+        http.authorizeRequests();
 
-	@Bean
-	JWTValidatorFilter jwtValidatorFilter() {
-		return new JWTValidatorFilter();
-	}
+        http.authorizeRequests(request -> {
+            request.antMatchers("/api/v1/users/create").permitAll();
+            request.anyRequest().authenticated();
+        });
+        http.formLogin();
+        http.httpBasic();
+        return http.build();
+    }
 
-	@Bean
-	JWTGeneratorFilter jwtGeneratorFilter() {
-		return new JWTGeneratorFilter();
-	}
+    @Bean
+    JWTValidatorFilter jwtValidatorFilter() {
+        return new JWTValidatorFilter();
+    }
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(10);
-	}
+    @Bean
+    JWTGeneratorFilter jwtGeneratorFilter() {
+        return new JWTGeneratorFilter();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
+    }
 }

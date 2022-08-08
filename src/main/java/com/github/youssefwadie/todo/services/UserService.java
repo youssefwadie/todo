@@ -69,10 +69,10 @@ public class UserService {
         }
     }
 
-	public User findByEmail(String email) throws UserNotFoundException {
-		return userDao.findByEmail(email)
+    public User findByEmail(String email) throws UserNotFoundException {
+        return userDao.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("No User with email: %s was found!".formatted(email)));
-	}
+    }
 
 
 }

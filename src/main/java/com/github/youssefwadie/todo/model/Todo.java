@@ -9,82 +9,82 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
 
 public class Todo {
-	private Long id;
-	private String title;
-	private String description;
+    private Long id;
+    private String title;
+    private String description;
 
-	private Long userId;
+    private Long userId;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd:HH:mm:ss")
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	private LocalDateTime deadTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd:HH:mm:ss")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime deadTime;
 
-	private Boolean done;
+    private Boolean done;
 
-	public Todo() {
-	}
+    public Todo() {
+    }
 
-	public Todo(Long id, String title, String description, LocalDateTime deadTime, boolean done, Long userId) {
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.deadTime = deadTime;
-		this.done = done;
-		this.userId = userId;
-	}
+    public Todo(Long id, String title, String description, LocalDateTime deadTime, boolean done, Long userId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.deadTime = deadTime;
+        this.done = done;
+        this.userId = userId;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Long getUserId() {
-		return userId;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	public LocalDateTime getDeadTime() {
-		return deadTime;
-	}
+    public LocalDateTime getDeadTime() {
+        return deadTime;
+    }
 
-	public void setDeadTime(LocalDateTime deadTime) {
-		this.deadTime = deadTime;
-	}
+    public void setDeadTime(LocalDateTime deadTime) {
+        this.deadTime = deadTime;
+    }
 
-	public Boolean getDone() {
-		return done;
-	}
+    public Boolean getDone() {
+        return done;
+    }
 
-	public void setDone(Boolean done) {
-		this.done = done;
-	}
+    public void setDone(Boolean done) {
+        this.done = done;
+    }
 
-	@Override
-	public String toString() {
-		return "Todo{" + "id=" + id + ", title='" + title + '\'' + ", description='" + description + '\'' + ", userId="
-				+ userId + ", deadTime=" + deadTime + '}';
-	}
+    @Override
+    public String toString() {
+        return "Todo{" + "id=" + id + ", title='" + title + '\'' + ", description='" + description + '\'' + ", userId="
+                + userId + ", deadTime=" + deadTime + '}';
+    }
 }

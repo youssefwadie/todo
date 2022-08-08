@@ -18,7 +18,7 @@ public class TodoRowMapper implements RowMapper<Todo> {
         LocalDateTime deadTime = rs.getTimestamp("dead_time").toLocalDateTime();
         Boolean done = rs.getBoolean("done");
         Long userId = rs.getLong("user_id");
-        
+
         return new Todo(id, title, description, deadTime, done, userId);
     }
 }

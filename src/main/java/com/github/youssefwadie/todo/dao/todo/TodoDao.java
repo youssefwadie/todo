@@ -136,6 +136,7 @@ public interface TodoDao {
 
     /**
      * finds all the todos for given userId
+     *
      * @param userId must not be {@literal null}.
      * @return all the todos for given user by their id
      * @throws IllegalArgumentException in case the given id is null
@@ -145,6 +146,7 @@ public interface TodoDao {
 
     /**
      * deletes all the todos' for given userId
+     *
      * @param userId must not be {@literal null}
      * @throws IllegalArgumentException if the userId is {@literal null}
      */
@@ -154,6 +156,7 @@ public interface TodoDao {
 
     /**
      * count all the todos created by a user
+     *
      * @param userId must not be {@literal null}
      * @return the number of todos for a given user
      * @throws IllegalArgumentException if userId is {@literal null}
@@ -164,7 +167,7 @@ public interface TodoDao {
     /**
      * Returns whether todo with the given id is owned by a user with the given userId.
      *
-     * @param id must not be {@literal null}.
+     * @param id     must not be {@literal null}.
      * @param userId must not be {@literal null}
      * @return {@literal true} if a todo with the given id, belongs to the user with the given id {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null} or {@literal userId} is {@literal null}.

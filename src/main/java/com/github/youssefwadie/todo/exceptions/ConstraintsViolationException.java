@@ -9,10 +9,11 @@ import java.util.Map;
 @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED)
 public class ConstraintsViolationException extends Exception {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 5086046763662803426L;
 
-	private final Map<String, String> errors;
+    private final Map<String, String> errors;
+
     public ConstraintsViolationException(Map<String, String> errors) {
         this.errors = errors;
     }

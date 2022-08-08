@@ -31,7 +31,7 @@ public class TodoService {
         return todoDao.save(todo);
     }
 
-    public void validateTodo(Todo todo) throws ConstraintsViolationException{
+    public void validateTodo(Todo todo) throws ConstraintsViolationException {
         Map<String, String> errors = new HashMap<>();
         if (BasicValidator.isBlank(todo.getTitle())) {
             errors.put("title", "Cannot be blank or null");

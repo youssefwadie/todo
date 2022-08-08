@@ -32,7 +32,7 @@ public class JWTGeneratorFilter extends OncePerRequestFilter {
                     .setExpiration(new Date(now.getTime() + SecurityConstants.JWT_LIFE_TIME)).signWith(SecurityConstants.key)
                     .compact();
 
-            response.setHeader(SecurityConstants.JWT_HEADER, SecurityConstants.JWT_AUTHENTICATION_SCHEME + jwt);
+            response.setHeader(SecurityConstants.JWT_HEADER, String.format("%s %s", SecurityConstants.JWT_AUTHENTICATION_SCHEME, jwt));
 
         }
         filterChain.doFilter(request, response);

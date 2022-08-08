@@ -8,10 +8,10 @@ import java.io.Serial;
 import java.util.Collection;
 
 public class TodoUserDetails implements UserDetails {
-	
-	@Serial
+
+    @Serial
     private static final long serialVersionUID = 5086046763662803426L;
-	private final User user;
+    private final User user;
 
     public TodoUserDetails(User user) {
         this.user = user;
