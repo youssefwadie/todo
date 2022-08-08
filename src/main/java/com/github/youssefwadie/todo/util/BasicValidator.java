@@ -4,7 +4,9 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import java.time.LocalDateTime;
 
-public class BasicValidator {
+public final class BasicValidator {
+    private BasicValidator() {}
+
     private static final EmailValidator emailValidator = EmailValidator.getInstance(true);
 
     public static boolean isBlank(String string) {
