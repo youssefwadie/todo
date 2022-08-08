@@ -1,11 +1,12 @@
 package com.github.youssefwadie.todo.security;
 
-import com.github.youssefwadie.todo.model.User;
+import java.io.Serial;
+import java.util.Collection;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serial;
-import java.util.Collection;
+import com.github.youssefwadie.todo.model.User;
 
 public class TodoUserDetails implements UserDetails {
 

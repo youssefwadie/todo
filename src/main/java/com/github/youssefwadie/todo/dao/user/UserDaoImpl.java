@@ -1,7 +1,12 @@
 package com.github.youssefwadie.todo.dao.user;
 
-import com.github.youssefwadie.todo.model.User;
-import com.github.youssefwadie.todo.util.BasicValidator;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.util.Streamable;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
@@ -12,12 +17,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.github.youssefwadie.todo.model.User;
+import com.github.youssefwadie.todo.security.util.BasicValidator;
 
 @Repository
 @Primary

@@ -1,10 +1,11 @@
 package com.github.youssefwadie.todo.security;
 
 
-import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
-import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,7 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.Collections;
+import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
+import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -42,9 +44,11 @@ public class SecurityConfig {
         http.authorizeRequests();
 
         http.authorizeRequests(request -> {
-            request.antMatchers("/api/v1/users/create").permitAll();
+            request.antMatchers(HttpMethod.GET, "/users/refresh-token").permitAll();
+            request.antMatchers(HttpMethod.POST, "/users/create").permitAll();
             request.anyRequest().authenticated();
         });
+
         http.formLogin();
         http.httpBasic();
         return http.build();
