@@ -10,7 +10,7 @@ A Simple Todo Application with Spring Boot and Angular.
 
 * Back-end
   * Security
-    * JWT with refresh token
+    * JWT with refresh token :heavy_check_mark:
   * Email reminders
   * More end points
 
