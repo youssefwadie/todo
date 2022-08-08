@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,7 +33,9 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
 
                 TodoUserDetails userDetails = new TodoUserDetails(user);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                context.setAuthentication(authentication);
+                SecurityContextHolder.setContext(context);
             } catch (Exception e) {
                 throw new BadCredentialsException(e.getMessage());
             }
