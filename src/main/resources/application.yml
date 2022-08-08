@@ -4,18 +4,14 @@ app:
     jdbc-url: jdbc:mariadb://localhost:3306/todo
     username: appuser
     password: password
-    pool-size: 15
+    maximum-pool-size: 15
 
 server:
   port: 8080
-  servlet:
-    context-path: /api/v1
+  servlet.context-path: /api/v1
 
 
 logging:
   level:
-    org:
-      springframework:
-        security:
-          web:
-            FilterChainProxy: DEBUG
+    org.springframework.security.web.FilterChainProxy: DEBUG
+    com.zaxxer.hikari.pool: DEBUG
