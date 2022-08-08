@@ -9,10 +9,11 @@ import {FormsModule} from '@angular/forms';
 import {DashboardComponent} from './components/dashboard/dashboard.component';
 import {TodoComponent} from './components/todo/todo.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, DashboardComponent, TodoComponent],
-  imports: [BrowserModule, FormsModule, AppRoutingModule, NgbModule, FontAwesomeModule],
+  imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, NgbModule, FontAwesomeModule],
   providers: [],
   bootstrap: [AppComponent],
 })
