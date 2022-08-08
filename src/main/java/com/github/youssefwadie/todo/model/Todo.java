@@ -6,85 +6,95 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "todos")
 public class Todo {
-	private Long id;
-	private String title;
-	private String description;
+    @Id
+    private Long id;
 
-	private Long userId;
+    @Basic
+    private String title;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd:HH:mm:ss")
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	private LocalDateTime deadTime;
+    @Basic
+    private String description;
 
-	private Boolean done;
+    @Basic
+    private Long userId;
 
-	public Todo() {
-	}
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd:HH:mm:ss")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime deadTime;
 
-	public Todo(Long id, String title, String description, LocalDateTime deadTime, boolean done, Long userId) {
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.deadTime = deadTime;
-		this.done = done;
-		this.userId = userId;
-	}
+    @Basic
+    private Boolean done;
 
-	public Long getId() {
-		return id;
-	}
+    public Todo() {
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Todo(Long id, String title, String description, LocalDateTime deadTime, boolean done, Long userId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.deadTime = deadTime;
+        this.done = done;
+        this.userId = userId;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public Long getUserId() {
-		return userId;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public LocalDateTime getDeadTime() {
-		return deadTime;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public void setDeadTime(LocalDateTime deadTime) {
-		this.deadTime = deadTime;
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	public Boolean getDone() {
-		return done;
-	}
+    public LocalDateTime getDeadTime() {
+        return deadTime;
+    }
 
-	public void setDone(Boolean done) {
-		this.done = done;
-	}
+    public void setDeadTime(LocalDateTime deadTime) {
+        this.deadTime = deadTime;
+    }
 
-	@Override
-	public String toString() {
-		return "Todo{" + "id=" + id + ", title='" + title + '\'' + ", description='" + description + '\'' + ", userId="
-				+ userId + ", deadTime=" + deadTime + '}';
-	}
+    public Boolean getDone() {
+        return done;
+    }
+
+    public void setDone(Boolean done) {
+        this.done = done;
+    }
+
+    @Override
+    public String toString() {
+        return "Todo{" + "id=" + id + ", title='" + title + '\'' + ", description='" + description + '\'' + ", userId="
+                + userId + ", deadTime=" + deadTime + '}';
+    }
 }

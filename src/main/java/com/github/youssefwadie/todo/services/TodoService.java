@@ -1,6 +1,6 @@
 package com.github.youssefwadie.todo.services;
 
-import com.github.youssefwadie.todo.dao.todo.TodoDao;
+import com.github.youssefwadie.todo.repositories.TodoRepository;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.model.Todo;
 import com.github.youssefwadie.todo.util.BasicValidator;
@@ -13,22 +13,22 @@ import java.util.Objects;
 
 @Service
 public class TodoService {
-    private final TodoDao todoDao;
+    private final TodoRepository todoRepository;
 
     private final UserService userService;
 
-    public TodoService(TodoDao todoDao, UserService userService) {
-        this.todoDao = todoDao;
+    public TodoService(TodoRepository todoRepository, UserService userService) {
+        this.todoRepository = todoRepository;
         this.userService = userService;
     }
 
     public List<Todo> findAll(Long userId) {
-        return (List<Todo>) todoDao.findAllByUserId(userId);
+        return (List<Todo>) todoRepository.findAllByUserId(userId);
     }
 
     public Todo save(Todo todo) throws ConstraintsViolationException {
         validateTodo(todo);
-        return todoDao.save(todo);
+        return todoRepository.save(todo);
     }
 
     public void validateTodo(Todo todo) throws ConstraintsViolationException{

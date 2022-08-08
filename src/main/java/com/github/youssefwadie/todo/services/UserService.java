@@ -1,7 +1,7 @@
 package com.github.youssefwadie.todo.services;
 
-import com.github.youssefwadie.todo.dao.todo.TodoDao;
-import com.github.youssefwadie.todo.dao.user.UserDao;
+import com.github.youssefwadie.todo.repositories.TodoRepository;
+import com.github.youssefwadie.todo.repositories.UserRepository;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.exceptions.UserNotFoundException;
 import com.github.youssefwadie.todo.model.User;
@@ -14,14 +14,14 @@ import java.util.Map;
 
 @Service
 public class UserService {
-    private final UserDao userDao;
-    private final TodoDao todoDao;
+    private final UserRepository userRepository;
+    private final TodoRepository todoRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserDao userDao, TodoDao todoDao, PasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
-        this.todoDao = todoDao;
+    public UserService(UserRepository userRepository, TodoRepository todoRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.todoRepository = todoRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -30,20 +30,20 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 
         user.setPassword(encodedPassword);
-        return userDao.save(user);
+        return userRepository.save(user);
     }
 
     public boolean existsById(Long userId) {
-        return userDao.existsById(userId);
+        return userRepository.existsById(userId);
     }
 
     public void deleteUser(User user) {
-        todoDao.deleteAllByUserId(user.getId());
-        userDao.delete(user);
+        todoRepository.deleteAllByUserId(user.getId());
+        userRepository.delete(user);
     }
 
     public User findById(Long userId) throws UserNotFoundException {
-        return userDao.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("No User with id: %d was found!".formatted(userId)));
     }
 
@@ -54,7 +54,7 @@ public class UserService {
         if (!BasicValidator.isValidEmail(userEmail)) {
             errors.put("email", "Not a valid email");
         } else {
-            boolean emailAlreadyExists = userDao.existsByEmail(userEmail);
+            boolean emailAlreadyExists = userRepository.existsByEmail(userEmail);
             if (emailAlreadyExists) {
                 errors.put("email", "the email %s is already owned by another account".formatted(userEmail));
             }
@@ -70,7 +70,7 @@ public class UserService {
     }
 
 	public User findByEmail(String email) throws UserNotFoundException {
-		return userDao.findByEmail(email)
+		return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("No User with email: %s was found!".formatted(email)));
 	}
 

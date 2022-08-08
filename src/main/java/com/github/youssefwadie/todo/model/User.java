@@ -3,12 +3,19 @@ package com.github.youssefwadie.todo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.*;
 
+
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
     private Long id;
 
+    @Basic
     private String email;
 
+    @Basic
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
@@ -16,6 +23,9 @@ public class User {
         this.id = id;
         this.email = email;
         this.password = password;
+    }
+
+    public User() {
     }
 
     public Long getId() {

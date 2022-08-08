@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.github.youssefwadie.todo.dao.todo.TodoDao;
-import com.github.youssefwadie.todo.dao.user.UserDao;
+import com.github.youssefwadie.todo.repositories.TodoRepository;
+import com.github.youssefwadie.todo.repositories.UserRepository;
 import com.github.youssefwadie.todo.exceptions.UserNotFoundException;
 import com.github.youssefwadie.todo.model.User;
 
@@ -25,10 +25,10 @@ import com.github.youssefwadie.todo.model.User;
 public class UserServiceTests {
 
     @MockBean
-    UserDao userDao;
+    UserRepository userRepository;
 
     @MockBean
-    TodoDao todoDao;
+    TodoRepository todoRepository;
 
     @MockBean
     PasswordEncoder passwordEncoder;
@@ -48,25 +48,25 @@ public class UserServiceTests {
             System.out.println("Deleting user id: " + passedUserId);
             assertThat(passedUserId).isEqualTo(userId);
             return null;
-        }).when(todoDao).deleteAllByUserId(user.getId());
+        }).when(todoRepository).deleteAllByUserId(user.getId());
         
         Mockito.doAnswer(invocation -> {
         	User passedUser = invocation.getArgument(0);
         	System.out.printf("Deleting user ... %d - with email %s%n", passedUser.getId(), passedUser.getEmail());
         	assertThat(passedUser.getId()).isEqualTo(userId);
         	return null;
-        }).when(userDao).delete(user);
+        }).when(userRepository).delete(user);
         
         userService.deleteUser(user);
-        Mockito.verify(todoDao, Mockito.times(1)).deleteAllByUserId(userId);
-        Mockito.verify(userDao, Mockito.times(1)).delete(user);
+        Mockito.verify(todoRepository, Mockito.times(1)).deleteAllByUserId(userId);
+        Mockito.verify(userRepository, Mockito.times(1)).delete(user);
     }
 
     @Test
     void testFindUserByIdThrowsException() throws UserNotFoundException {
     	Long userId = 84568L;
     	Optional<User> userOptional = Optional.empty();
-    	Mockito.when(userDao.findById(userId)).thenReturn(userOptional);
+    	Mockito.when(userRepository.findById(userId)).thenReturn(userOptional);
     	
     	assertThrows(UserNotFoundException.class, ()-> {
     		userService.findById(userId);
@@ -80,7 +80,7 @@ public class UserServiceTests {
     	Long userId = 1L;
     	User user = new User(userId, "", "");
     	Optional<User> userOptional = Optional.of(user);
-    	Mockito.when(userDao.findById(userId)).thenReturn(userOptional);
+    	Mockito.when(userRepository.findById(userId)).thenReturn(userOptional);
     	User retrivedUser = userService.findById(userId);
     	System.out.println(retrivedUser);
     	assertThat(retrivedUser.getId()).isEqualTo(user.getId());
