@@ -32,7 +32,7 @@ public class TokenPropertiesTests {
      */
     @Test
     void testAuthenticationSchemeIsSet() {
-        assertThat(tokenProperties.getJwtAuthenticationScheme()).isEqualTo("Bearer");
+        assertThat(tokenProperties.getAuthenticationScheme()).isEqualTo("Bearer");
     }
 
     @Test
@@ -47,16 +47,16 @@ public class TokenPropertiesTests {
 
     @Test
     void testJwtRefreshTokenCookieNameIsSet() {
-        assertThat(tokenProperties.getJwtRefreshTokenCookieName()).isEqualTo("refresh-token");
+        assertThat(tokenProperties.getRefreshTokenCookieName()).isEqualTo("refresh-token");
     }
 
     @Test
     void testJwtKeyIsSet() {
-        assertThat(tokenProperties.getJwtKey()).isEqualTo("jAOa=kms)dLxgE#*($#Qe_XH!uPq8Vdby@YlnvkANox^u3dQ53YU%n4B");
+        assertThat(tokenProperties.getKey()).isEqualTo("jAOa=kms)dLxgE#*($#Qe_XH!uPq8Vdby@YlnvkANox^u3dQ53YU%n4B");
     }
 
     @Test
     void testJwtHeaderNameIsSet() {
-        assertThat(tokenProperties.getJwtHeaderName()).isEqualTo("Authorization");
+        assertThat(tokenProperties.getHeaderName()).isEqualTo("Authorization");
     }
 }

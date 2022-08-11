@@ -39,7 +39,7 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String jwt = request.getHeader(tokenProperties.getJwtHeaderName());
+        String jwt = request.getHeader(tokenProperties.getHeaderName());
         if (jwt != null) {
             try {
                 jwt = jwtUtils.extractAccessToken(jwt);
@@ -69,11 +69,11 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String authorizationHeader = request.getHeader(tokenProperties.getJwtHeaderName());
+        String authorizationHeader = request.getHeader(tokenProperties.getHeaderName());
         String requestPath = request.getServletPath();
         System.out.println(requestPath);
         if (authorizationHeader != null) {
-            return !authorizationHeader.startsWith(tokenProperties.getJwtAuthenticationScheme())
+            return !authorizationHeader.startsWith(tokenProperties.getAuthenticationScheme())
                     || requestPath.equals("/users/refresh");
         }
         return super.shouldNotFilter(request);

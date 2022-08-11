@@ -17,11 +17,11 @@ logging:
     com.zaxxer.hikari.pool: DEBUG
 
 token:
-  jwt-header-name: Authorization
-  jwt-key: jAOa=kms)dLxgE#*($#Qe_XH!uPq8Vdby@YlnvkANox^u3dQ53YU%n4B
+  header-name: Authorization
+  authentication-scheme: Bearer
+  key: jAOa=kms)dLxgE#*($#Qe_XH!uPq8Vdby@YlnvkANox^u3dQ53YU%n4B
   access-token-life-time: 900000
   refresh-token-life-time: 2592000000
-  jwt-authentication-scheme: Bearer
-  jwt-refresh-token-cookie-name: refresh-token
+  refresh-token-cookie-name: refresh-token
 
 

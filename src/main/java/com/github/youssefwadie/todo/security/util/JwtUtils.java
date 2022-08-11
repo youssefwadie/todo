@@ -26,14 +26,14 @@ public class JwtUtils {
     }
 
     public String extractAccessToken(String token) throws InvalidAuthenticationSchemeException {
-        final String expectedAuthScheme = this.tokenProperties.getJwtAuthenticationScheme();
+        final String expectedAuthScheme = this.tokenProperties.getAuthenticationScheme();
         final String actualAuthScheme = extractAuthenticationScheme(token).orElseThrow(
                 () -> new InvalidAuthenticationSchemeException("Invalid authentication scheme expected: %s, found none"
-                        .formatted(this.tokenProperties.getJwtAuthenticationScheme())));
+                        .formatted(this.tokenProperties.getAuthenticationScheme())));
 
         if (!expectedAuthScheme.equals(actualAuthScheme)) {
             throw new InvalidAuthenticationSchemeException("Invalid authentication scheme expected: %s, found %s"
-                    .formatted(this.tokenProperties.getJwtAuthenticationScheme(), actualAuthScheme));
+                    .formatted(this.tokenProperties.getAuthenticationScheme(), actualAuthScheme));
         }
 
         return token.substring(expectedAuthScheme.length() + 1);

@@ -43,7 +43,7 @@ public class UserController {
         if (refreshTokenCookie == null) {
             SimpleResponseBody simpleResponseBody = new SimpleResponseBody
                     .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                    .setMessage("Expected %s header".formatted(tokenProperties.getJwtHeaderName()))
+                    .setMessage("Expected %s header".formatted(tokenProperties.getHeaderName()))
                     .build();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(simpleResponseBody);
         }
@@ -65,11 +65,11 @@ public class UserController {
 
             SimpleResponseBody token = new SimpleResponseBody
                     .Builder(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase())
-                    .setMessage("access token is refreshed, can be found in header: %s, `%s access-token`".formatted(tokenProperties.getJwtHeaderName(), tokenProperties.getJwtAuthenticationScheme()))
+                    .setMessage("access token is refreshed, can be found in header: %s, `%s access-token`".formatted(tokenProperties.getHeaderName(), tokenProperties.getAuthenticationScheme()))
                     .build();
 
-            return ResponseEntity.status(HttpStatus.OK).header(tokenProperties.getJwtHeaderName(),
-                    tokenProperties.getJwtAuthenticationScheme() + " " + accessToken).body(token);
+            return ResponseEntity.status(HttpStatus.OK).header(tokenProperties.getHeaderName(),
+                    tokenProperties.getAuthenticationScheme() + " " + accessToken).body(token);
 
         } catch (Exception ex) {
             SimpleResponseBody error = new SimpleResponseBody
@@ -93,7 +93,7 @@ public class UserController {
 
     private Cookie getAccessTokenCookie(Cookie[] cookies) {
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(tokenProperties.getJwtRefreshTokenCookieName())) return cookie;
+            if (cookie.getName().equals(tokenProperties.getRefreshTokenCookieName())) return cookie;
         }
         return null;
     }

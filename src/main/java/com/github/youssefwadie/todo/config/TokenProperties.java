@@ -13,33 +13,33 @@ import java.nio.charset.StandardCharsets;
 @Setter
 @ConfigurationProperties(prefix = "token")
 public class TokenProperties {
-    private String jwtHeaderName;
-    private String jwtKey;
+    private String headerName;
+    private String key;
     private int accessTokenLifeTime;
 
     private SecretKey secretKey;
 
     private long refreshTokenLifeTime;
 
-    private String jwtAuthenticationScheme;
+    private String authenticationScheme;
     private int refreshTokenCookieAge;
 
-    private String jwtRefreshTokenCookieName;
+    private String refreshTokenCookieName;
 
     public TokenProperties() {
-        this.jwtHeaderName = "Authorization";
-        this.jwtKey = "jxgE#*($#Qe_XH!uPq8Vdby@YFNkANd^u3dQ53YU%n4B";
+        this.headerName = "Authorization";
+        this.key = "jxgE#*($#Qe_XH!uPq8Vdby@YFNkANd^u3dQ53YU%n4B";
         this.accessTokenLifeTime = 300_000; // 5 minutes (in ms)
         this.secretKey = null;
         this.refreshTokenLifeTime = 604_800_000L;  // one week (in ms)
-        this.jwtAuthenticationScheme = "Bearer";
+        this.authenticationScheme = "Bearer";
         this.refreshTokenCookieAge = 604_800;     // one week (in s)
-        this.jwtRefreshTokenCookieName = "refresh-token";
+        this.refreshTokenCookieName = "refresh-token";
     }
 
     @PostConstruct
     void init() {
-        this.secretKey = Keys.hmacShaKeyFor(jwtKey.getBytes(StandardCharsets.UTF_8));
+        this.secretKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
         try {
             refreshTokenCookieAge = Math.toIntExact(refreshTokenLifeTime / 1000);
         } catch (ArithmeticException ex) {
