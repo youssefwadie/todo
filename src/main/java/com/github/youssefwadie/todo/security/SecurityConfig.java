@@ -1,8 +1,11 @@
 package com.github.youssefwadie.todo.security;
 
 
-import java.util.Collections;
-
+import com.github.youssefwadie.todo.config.TokenProperties;
+import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
+import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
+import com.github.youssefwadie.todo.security.util.JwtUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,12 +18,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
-import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
+import java.util.Collections;
 
+@AllArgsConstructor
 @Configuration
 @EnableWebSecurity(debug = true)
 public class SecurityConfig {
+
+    private final TokenProperties tokenProperties;
+    private final JwtUtils jwtUtils;
+
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,7 +51,7 @@ public class SecurityConfig {
         http.authorizeRequests();
 
         http.authorizeRequests(request -> {
-            request.antMatchers(HttpMethod.GET, "/users/refresh-token").permitAll();
+            request.antMatchers(HttpMethod.GET, "/users/refresh").permitAll();
             request.antMatchers(HttpMethod.POST, "/users/create").permitAll();
             request.anyRequest().authenticated();
         });
@@ -56,16 +63,18 @@ public class SecurityConfig {
 
     @Bean
     JWTValidatorFilter jwtValidatorFilter() {
-        return new JWTValidatorFilter();
+        return new JWTValidatorFilter(tokenProperties, jwtUtils);
     }
 
     @Bean
     JWTGeneratorFilter jwtGeneratorFilter() {
-        return new JWTGeneratorFilter();
+        return new JWTGeneratorFilter(tokenProperties);
     }
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
+
+
 }

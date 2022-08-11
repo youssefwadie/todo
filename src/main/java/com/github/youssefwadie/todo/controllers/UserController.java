@@ -1,36 +1,32 @@
 package com.github.youssefwadie.todo.controllers;
 
 
-import java.util.Date;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.github.youssefwadie.todo.config.TokenProperties;
 import com.github.youssefwadie.todo.constants.SecurityConstants;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.security.util.JwtUtils;
-import com.github.youssefwadie.todo.security.util.JwtUtils.TOKEN_TYPE;
-import com.github.youssefwadie.todo.security.util.SimpleResponseBody;
 import com.github.youssefwadie.todo.services.UserService;
-
+import com.github.youssefwadie.todo.util.SimpleResponseBody;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @RestController
 @RequestMapping(path = "/users")
 @AllArgsConstructor
 public class UserController {
     private final UserService service;
-
+    private final TokenProperties tokenProperties;
+    private final JwtUtils jwtUtils;
 
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<User> login() {
@@ -39,27 +35,23 @@ public class UserController {
     }
 
 
-    @GetMapping(value = "/refresh-token", produces = "application/json")
-    public ResponseEntity<Object> refreshToken(@RequestHeader(value = SecurityConstants.JWT_HEADER, required = false) String authorizationHeader) {
-        if (authorizationHeader == null) {
-            SimpleResponseBody simpleResponseBody = new SimpleResponseBody
-                    .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                    .setMessage("Expected %s header".formatted(SecurityConstants.JWT_HEADER))
-                    .build();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(simpleResponseBody);
-        }
+    @GetMapping(value = "/refresh", produces = "application/json")
+    public ResponseEntity<Object> refreshToken(HttpServletRequest request) {
 
-        if (!authorizationHeader.startsWith(SecurityConstants.JWT_AUTHENTICATION_SCHEME)) {
+        Cookie refreshTokenCookie = getAccessTokenCookie(request.getCookies());
+
+        if (refreshTokenCookie == null) {
             SimpleResponseBody simpleResponseBody = new SimpleResponseBody
                     .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                    .setMessage("Expected %s header starts with: %s".formatted(SecurityConstants.JWT_HEADER, SecurityConstants.JWT_AUTHENTICATION_SCHEME))
+                    .setMessage("Expected %s header".formatted(tokenProperties.getJwtHeaderName()))
                     .build();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(simpleResponseBody);
         }
 
         try {
-            authorizationHeader = JwtUtils.extractAccessToken(authorizationHeader);
-            User user = JwtUtils.parseUser(authorizationHeader, TOKEN_TYPE.REFRESH);
+            String authorizationHeader = refreshTokenCookie.getValue();
+
+            User user = jwtUtils.parseUser(authorizationHeader, JwtUtils.TOKEN_TYPE.REFRESH);
             Date now = new Date();
             String accessToken = Jwts.builder()
                     .setIssuer("Todo")
@@ -67,17 +59,17 @@ public class UserController {
                     .claim(SecurityConstants.USER_ID_CLAIM_NAME, user.getId())
                     .claim(SecurityConstants.TOKEN_TYPE_CLAIM_NAME, SecurityConstants.TOKEN_TYPE_ACCESS_CLAIM_VALUE)
                     .setIssuedAt(now)
-                    .setExpiration(new Date(now.getTime() + SecurityConstants.ACCESS_TOKEN_LIFE_TIME))
-                    .signWith(SecurityConstants.SECRET_KEY)
+                    .setExpiration(new Date(now.getTime() + tokenProperties.getAccessTokenLifeTime()))
+                    .signWith(tokenProperties.getSecretKey())
                     .compact();
 
             SimpleResponseBody token = new SimpleResponseBody
                     .Builder(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase())
-                    .setMessage("access token is refreshed, found in header: " + SecurityConstants.JWT_HEADER)
+                    .setMessage("access token is refreshed, can be found in header: %s, `%s access-token`".formatted(tokenProperties.getJwtHeaderName(), tokenProperties.getJwtAuthenticationScheme()))
                     .build();
 
-            return ResponseEntity.status(HttpStatus.OK).header(SecurityConstants.JWT_HEADER,
-                    SecurityConstants.JWT_AUTHENTICATION_SCHEME + " " + accessToken).body(token);
+            return ResponseEntity.status(HttpStatus.OK).header(tokenProperties.getJwtHeaderName(),
+                    tokenProperties.getJwtAuthenticationScheme() + " " + accessToken).body(token);
 
         } catch (Exception ex) {
             SimpleResponseBody error = new SimpleResponseBody
@@ -97,5 +89,12 @@ public class UserController {
         } catch (ConstraintsViolationException e) {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getErrors());
         }
+    }
+
+    private Cookie getAccessTokenCookie(Cookie[] cookies) {
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(tokenProperties.getJwtRefreshTokenCookieName())) return cookie;
+        }
+        return null;
     }
 }

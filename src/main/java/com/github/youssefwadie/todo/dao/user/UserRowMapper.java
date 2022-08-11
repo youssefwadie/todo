@@ -1,12 +1,11 @@
 package com.github.youssefwadie.todo.dao.user;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import com.github.youssefwadie.todo.model.User;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.github.youssefwadie.todo.model.User;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Component
 public class UserRowMapper implements RowMapper<User> {

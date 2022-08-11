@@ -1,14 +1,14 @@
-package com.github.youssefwadie.todo.security.util;
-
-import java.time.Instant;
+package com.github.youssefwadie.todo.util;
 
 import lombok.Getter;
+
+import java.time.Instant;
 
 @Getter
 public class SimpleResponseBody {
     // Required
     private final int status;
-    private final String error;
+    private final String description;
 
     // Optional
     private final String message;
@@ -18,29 +18,29 @@ public class SimpleResponseBody {
 
     private SimpleResponseBody(Builder builder) {
         this.status = builder.status;
-        this.error = builder.error;
+        this.description = builder.description;
 
-        this.message = builder.errorMessage;
+        this.message = builder.message;
         this.timestamp = builder.timestamp.toString();
     }
 
     public static class Builder {
         private final int status;
-        private final String error;
+        private final String description;
 
-        private String errorMessage;
+        private String message;
         private Instant timestamp;
 
-        public Builder(int status, String error) {
-            this.error = error;
+        public Builder(int status, String description) {
+            this.description = description;
             this.status = status;
 
-            this.errorMessage = "";
+            this.message = "";
             this.timestamp = Instant.now();
         }
 
         public Builder setMessage(String message) {
-            this.errorMessage = message;
+            this.message = message;
             return this;
         }
 

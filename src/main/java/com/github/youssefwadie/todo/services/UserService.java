@@ -1,19 +1,17 @@
 package com.github.youssefwadie.todo.services;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.github.youssefwadie.todo.dao.todo.TodoDao;
 import com.github.youssefwadie.todo.dao.user.UserDao;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.exceptions.UserNotFoundException;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.util.BasicValidator;
-
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
