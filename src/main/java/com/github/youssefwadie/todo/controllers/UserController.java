@@ -43,7 +43,7 @@ public class UserController {
         if (refreshTokenCookie == null) {
             SimpleResponseBody simpleResponseBody = new SimpleResponseBody
                     .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                    .setMessage("Expected %s header".formatted(tokenProperties.getHeaderName()))
+                    .setMessage("Expected %s cookie".formatted(tokenProperties.getRefreshTokenCookieName()))
                     .build();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(simpleResponseBody);
         }
@@ -81,17 +81,18 @@ public class UserController {
     }
 
 
-    @PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
             User savedUser = service.addUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         } catch (ConstraintsViolationException e) {
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getErrors());
+            return ResponseEntity.status(HttpStatus.IM_USED).body(e.getErrors());
         }
     }
 
     private Cookie getAccessTokenCookie(Cookie[] cookies) {
+        if (cookies == null) return null;
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(tokenProperties.getRefreshTokenCookieName())) return cookie;
         }

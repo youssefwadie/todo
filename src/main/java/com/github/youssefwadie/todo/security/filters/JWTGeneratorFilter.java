@@ -63,6 +63,7 @@ public class JWTGeneratorFilter extends OncePerRequestFilter {
             Map<String, String> accessAndRefreshTokens = new HashMap<>();
             accessAndRefreshTokens.put(JWT_ACCESS_TOKEN, accessToken);
             Cookie refreshTokenCookie = new Cookie(tokenProperties.getRefreshTokenCookieName(), refreshToken);
+            refreshTokenCookie.setSecure(true);
             refreshTokenCookie.setHttpOnly(true);
             refreshTokenCookie.setMaxAge(tokenProperties.getRefreshTokenCookieAge());
             response.addCookie(refreshTokenCookie);

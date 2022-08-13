@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.github.youssefwadie.todo.dao.todo.TodoDao;
+import com.github.youssefwadie.todo.dao.todo.TodoItemDao;
 import com.github.youssefwadie.todo.dao.user.UserDao;
 import com.github.youssefwadie.todo.exceptions.UserNotFoundException;
 import com.github.youssefwadie.todo.model.User;
@@ -28,7 +28,7 @@ public class UserServiceTests {
     UserDao userDao;
 
     @MockBean
-    TodoDao todoDao;
+    TodoItemDao todoDao;
 
     @MockBean
     PasswordEncoder passwordEncoder;

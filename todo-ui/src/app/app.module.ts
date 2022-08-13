@@ -6,15 +6,19 @@ import {AppComponent} from './app.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {LoginComponent} from './components/login/login.component';
 import {FormsModule} from '@angular/forms';
-import {DashboardComponent} from './components/dashboard/dashboard.component';
-import {TodoComponent} from './components/todo/todo.component';
+import {TodoDetailComponent} from './components/todo-list/todo-detail/todo-detail.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import { TodoEditComponent } from './components/todo-list/todo-edit/todo-edit.component';
+import { TodoListComponent } from './components/todo-list/todo-list.component';
+import {AuthInterceptor} from "./interceptors/auth-interceptor.service";
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, DashboardComponent, TodoComponent],
-  imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, NgbModule, FontAwesomeModule],
-  providers: [],
+  declarations: [AppComponent, LoginComponent, TodoDetailComponent, TodoEditComponent, TodoListComponent],
+  imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, NgbModule, FontAwesomeModule, HttpClientModule],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {

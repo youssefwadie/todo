@@ -52,11 +52,11 @@ public class SecurityConfig {
 
         http.authorizeRequests(request -> {
             request.antMatchers(HttpMethod.GET, "/users/refresh").permitAll();
-            request.antMatchers(HttpMethod.POST, "/users/create").permitAll();
+            request.antMatchers(HttpMethod.PUT, "/users").permitAll();
             request.anyRequest().authenticated();
         });
 
-        http.formLogin();
+        // http.formLogin();
         http.httpBasic();
         return http.build();
     }

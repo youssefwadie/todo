@@ -1,6 +1,6 @@
 package com.github.youssefwadie.todo.services;
 
-import com.github.youssefwadie.todo.dao.todo.TodoDao;
+import com.github.youssefwadie.todo.dao.todo.TodoItemDao;
 import com.github.youssefwadie.todo.dao.user.UserDao;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.exceptions.UserNotFoundException;
@@ -17,7 +17,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class UserService {
     private final UserDao userDao;
-    private final TodoDao todoDao;
+    private final TodoItemDao todoDao;
 
     private final PasswordEncoder passwordEncoder;
 

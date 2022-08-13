@@ -1,72 +1,73 @@
 package com.github.youssefwadie.todo.dao.todo;
 
-import com.github.youssefwadie.todo.model.Todo;
+import java.util.Optional;
+
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.github.youssefwadie.todo.model.TodoItem;
 
 @Repository
-public interface TodoDao {
+public interface TodoItemDao {
 
     /**
-     * Saves a given todo. Use the returned instance for further operations as the save operation might have changed the
+     * Saves a given todoItem. Use the returned instance for further operations as the save operation might have changed the
      * user instance completely.
      *
-     * @param todo must not be {@literal null}.
-     * @return the saved todo; will never be {@literal null}.
-     * @throws IllegalArgumentException in case the given {@literal todo} is {@literal null}.
+     * @param todoItem must not be {@literal null}.
+     * @return the saved todoItem; will never be {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal todoItem} is {@literal null}.
      */
 
     @Transactional
     @Modifying
-    Todo save(Todo todo);
+    TodoItem save(TodoItem todoItem);
 
     /**
-     * Saves all given todos.
+     * Saves all given todoItems.
      *
-     * @param todos must not be {@literal null} nor must it contain {@literal null}.
-     * @return the saved todos; will never be {@literal null}. The returned {@literal Iterable} will have the same size
+     * @param todoItems must not be {@literal null} nor must it contain {@literal null}.
+     * @return the saved todoItems; will never be {@literal null}. The returned {@literal Iterable} will have the same size
      * as the {@literal Iterable} passed as an argument.
-     * @throws IllegalArgumentException in case the given {@link Iterable todos} or one of its todos is {@literal null}.
+     * @throws IllegalArgumentException in case the given {@link Iterable todoItems} or one of its todoItems is {@literal null}.
      */
     @Transactional
-    Iterable<Todo> saveAll(Iterable<Todo> todos);
+    Iterable<TodoItem> saveAll(Iterable<TodoItem> todoItems);
 
     /**
-     * Retrieves a {@link Todo todo} by its id.
+     * Retrieves a {@link TodoItem todoItem} by its id.
      *
      * @param id must not be {@literal null}.
      * @return the user with the given email or {@literal  Optional#empty()} if non found.
      * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
     @Transactional(readOnly = true)
-    Optional<Todo> findById(Long id);
+    Optional<TodoItem> findById(Long id);
 
     /**
-     * Returns whether todo with the given id exists.
+     * Returns whether todoItem with the given id exists.
      *
      * @param id must not be {@literal null}.
-     * @return {@literal true} if a todo with the given id exists, {@literal false} otherwise.
+     * @return {@literal true} if a todoItem with the given id exists, {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */
     @Transactional(readOnly = true)
     boolean existsById(Long id);
 
     /**
-     * Returns all todos.
+     * Returns all todoItems.
      *
-     * @return all todos
+     * @return all todoItems
      */
     @Transactional(readOnly = true)
-    Iterable<Todo> findAll();
+    Iterable<TodoItem> findAll();
 
 
     /**
-     * Returns all {@link Todo todos} with the given IDs.
+     * Returns all {@link TodoItem todoItems} with the given IDs.
      * <p>
-     * If some or all ids are not found, no todos are returned for these IDs.
+     * If some or all ids are not found, no todoItems are returned for these IDs.
      * <p>
      *
      * @param ids must not be {@literal null} nor contain any {@literal null} values.
@@ -75,18 +76,18 @@ public interface TodoDao {
      * @throws IllegalArgumentException in case the given {@link Iterable ids} or one of its items is {@literal null}.
      */
     @Transactional(readOnly = true)
-    Iterable<Todo> findAllById(Iterable<? extends Long> ids);
+    Iterable<TodoItem> findAllById(Iterable<? extends Long> ids);
 
     /**
-     * Returns the number of todos available.
+     * Returns the number of todoItems available.
      *
-     * @return the number of todos.
+     * @return the number of todoItems.
      */
     @Transactional(readOnly = true)
     long count();
 
     /**
-     * Deletes the todo with the given id.
+     * Deletes the todoItem with the given id.
      *
      * @param id must not be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal id} is {@literal null}
@@ -97,20 +98,20 @@ public interface TodoDao {
 
 
     /**
-     * Deletes the given todo.
+     * Deletes the given todoItem.
      *
-     * @param todo must not be {@literal null}.
-     * @throws IllegalArgumentException in case the given {@literal id} is {@literal null} or {@literal not null} but {@literal the todo's} id {@literal null}
+     * @param todoItem must not be {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal id} is {@literal null} or {@literal not null} but {@literal the todoItem's} id {@literal null}
      */
     @Transactional
     @Modifying
-    void delete(Todo todo);
+    void delete(TodoItem todoItem);
 
     /**
-     * Deletes all {@link Todo todos} with the given IDs.
+     * Deletes all {@link TodoItem todoItems} with the given IDs.
      *
      * @param ids must not be {@literal null}. Must not contain {@literal null} elements.
-     * @throws IllegalArgumentException in case the given {@literal ids} or one of its todos is {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal ids} or one of its todoItems is {@literal null}.
      */
     @Transactional
     @Modifying
@@ -120,32 +121,32 @@ public interface TodoDao {
     /**
      * Deletes the given users.
      *
-     * @param todos must not be {@literal null}. Must not contain {@literal null} elements.
-     * @throws IllegalArgumentException in case the given {@literal todos} or one of the todos is {@literal null}.
+     * @param todoItems must not be {@literal null}. Must not contain {@literal null} elements.
+     * @throws IllegalArgumentException in case the given {@literal todoItems} or one of the todoItems is {@literal null}.
      */
     @Transactional
     @Modifying
-    void deleteAll(Iterable<Todo> todos);
+    void deleteAll(Iterable<TodoItem> todoItems);
 
     /**
-     * Deletes all todos.
+     * Deletes all todoItems.
      */
     @Transactional
     @Modifying
     void deleteAll();
 
     /**
-     * finds all the todos for given userId
+     * finds all the todoItems for given userId
      *
      * @param userId must not be {@literal null}.
-     * @return all the todos for given user by their id
+     * @return all the todoItems for given user by their id
      * @throws IllegalArgumentException in case the given id is null
      */
     @Transactional(readOnly = true)
-    Iterable<Todo> findAllByUserId(Long userId);
+    Iterable<TodoItem> findAllByUserId(Long userId);
 
     /**
-     * deletes all the todos' for given userId
+     * deletes all the todoItems' for given userId
      *
      * @param userId must not be {@literal null}
      * @throws IllegalArgumentException if the userId is {@literal null}
@@ -155,23 +156,29 @@ public interface TodoDao {
     void deleteAllByUserId(Long userId);
 
     /**
-     * count all the todos created by a user
+     * count all the todoItems created by a user
      *
      * @param userId must not be {@literal null}
-     * @return the number of todos for a given user
+     * @return the number of todoItems for a given user
      * @throws IllegalArgumentException if userId is {@literal null}
      */
     @Transactional(readOnly = true)
     long countByUserId(Long userId);
 
     /**
-     * Returns whether todo with the given id is owned by a user with the given userId.
+     * Returns whether todoItem with the given id is owned by a user with the given userId.
      *
      * @param id     must not be {@literal null}.
      * @param userId must not be {@literal null}
-     * @return {@literal true} if a todo with the given id, belongs to the user with the given id {@literal false} otherwise.
+     * @return {@literal true} if a todoItem with the given id, belongs to the user with the given id {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null} or {@literal userId} is {@literal null}.
      */
     @Transactional(readOnly = true)
     boolean belongsToUser(Long id, Long userId);
+
+    /**
+     * Sets the todoItem status, done or not
+     * @param done todoStatus
+     */
+    void setDone(Long id, boolean done);
 }

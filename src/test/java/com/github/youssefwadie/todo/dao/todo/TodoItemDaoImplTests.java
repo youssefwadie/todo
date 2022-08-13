@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.youssefwadie.todo.dao.BaseDaoTests;
-import com.github.youssefwadie.todo.model.Todo;
+import com.github.youssefwadie.todo.model.TodoItem;
 
-public class TodoDaoImplTests extends BaseDaoTests {
+public class TodoItemDaoImplTests extends BaseDaoTests {
     @Autowired
-    TodoDao todoDao;
+    TodoItemDao todoDao;
 
     @Test
     void testFindAllByUserId() {
         Long userId = 8L;
-        List<Todo> userTodos = (List<Todo>) todoDao.findAllByUserId(userId);
+        List<TodoItem> userTodos = (List<TodoItem>) todoDao.findAllByUserId(userId);
         assertThat(userTodos.size()).isEqualTo(0);
         userTodos.forEach(System.out::println);
     }
@@ -32,12 +32,12 @@ public class TodoDaoImplTests extends BaseDaoTests {
     @Test
     public void testDeleteAllIdsByUserId() {
         Long userId = 7L;
-        long todosCountBefore = todoDao.count();
+        long itemsCount = todoDao.count();
         todoDao.deleteAllByUserId(userId);
-        long todosCountAfter = todoDao.count();
-        System.out.println("old count = " + todosCountBefore);
-        System.out.println("new count = " + todosCountAfter);
-        assertThat(todosCountBefore).isEqualTo(todosCountAfter);
+        long itemsCountAfter = todoDao.count();
+        System.out.println("old count = " + itemsCount);
+        System.out.println("new count = " + itemsCountAfter);
+        assertThat(itemsCount).isEqualTo(itemsCountAfter);
     }
 
     @Test

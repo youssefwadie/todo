@@ -1,0 +1,19 @@
+<div class="container">
+
+  <ul class="list-group">
+    <li *ngFor="let todo of todoList" class="list-group-item rounded p-4 ms-2 me-2 mb-2">
+      <app-todo-detail [todo]="todo"></app-todo-detail>
+    </li>
+  </ul>
+
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{action}}</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+      <app-todo-edit [todo]="selectedTodo"></app-todo-edit>
+    </div>
+  </ng-template>
+</div>

@@ -1,10 +1,11 @@
 package com.github.youssefwadie.todo.controllers;
 
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
-import com.github.youssefwadie.todo.model.Todo;
+import com.github.youssefwadie.todo.model.TodoItem;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
-import com.github.youssefwadie.todo.services.TodoService;
+import com.github.youssefwadie.todo.services.TodoItemService;
+import com.github.youssefwadie.todo.util.SimpleResponseBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,35 +14,32 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/todo", produces = "application/json")
 public class TodoListController {
 
-    private final TodoService todoService;
+    private final TodoItemService todoItemService;
 
-    public TodoListController(TodoService todoService) {
-        this.todoService = todoService;
+    public TodoListController(TodoItemService todoItemService) {
+        this.todoItemService = todoItemService;
     }
 
-    @GetMapping(value = "list", produces = "application/json")
-    public ResponseEntity<List<Todo>> list() {
+    @GetMapping(value = "", produces = "application/json")
+    public ResponseEntity<List<TodoItem>> list() {
         User loggedUser = getLoggedUser();
-        return ResponseEntity.ok(todoService.findAll(loggedUser.getId()));
+        return ResponseEntity.ok(todoItemService.findAll(loggedUser.getId()));
     }
 
-    private User getLoggedUser() {
-        TodoUserDetails loggedInPrincipal = (TodoUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return loggedInPrincipal.getUser();
-    }
 
-    @PostMapping(path = "/create", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> createTodo(@RequestBody Todo todo) throws URISyntaxException {
+    @PutMapping(path = "", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> createTodo(@RequestBody TodoItem todo) throws URISyntaxException {
         try {
             User loggedUser = getLoggedUser();
 
             todo.setUserId(loggedUser.getId());
-            Todo savedTodo = todoService.save(todo);
+            TodoItem savedTodo = todoItemService.save(todo);
 
             URI saveTodoURI = new URI("/api/v1/todo/" + savedTodo.getId());
 
@@ -50,4 +48,50 @@ public class TodoListController {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(ex.getErrors());
         }
     }
+
+    @GetMapping(path = "/{id:\\d+}")
+    public ResponseEntity<?> getTodoById(@PathVariable("id") Long id) {
+        User loggedUser = getLoggedUser();
+        Optional<TodoItem> optionalTodoItem = todoItemService.findById(id, loggedUser.getId());
+        if (optionalTodoItem.isEmpty()) {
+            SimpleResponseBody responseBody = new SimpleResponseBody
+                    .Builder(HttpStatus.NO_CONTENT.value(), HttpStatus.NOT_FOUND.getReasonPhrase())
+                    .setMessage("No TodoItem with id: %d was found".formatted(id))
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        }
+        return ResponseEntity.ok(optionalTodoItem.get());
+    }
+
+    @PutMapping("/id:\\d+")
+    public ResponseEntity<?> updateTodoItem(@RequestBody TodoItem todoItem) throws ConstraintsViolationException {
+        User loggedUser = getLoggedUser();
+        if (!todoItemService.belongsToUser(todoItem.getId(), loggedUser.getId())) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(todoItemService.save(todoItem));
+    }
+
+//    @GetMapping(path = "/{id:\\d+}/{done:true|false}")
+//    public ResponseEntity<?> toggleDone(@PathVariable("id") Long id, @PathVariable("done") Boolean done) {
+//        User loggedUser = getLoggedUser();
+//        Optional<TodoItem> optionalTodoItem = todoService.setDone(id, done, loggedUser.getId());
+//        if (optionalTodoItem.isEmpty()) {
+//            SimpleResponseBody responseBody = new SimpleResponseBody
+//                    .Builder(HttpStatus.NO_CONTENT.value(), HttpStatus.NOT_FOUND.getReasonPhrase())
+//                    .setMessage("No TodoItem with id: %d was found".formatted(id))
+//                    .build();
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+//        }
+//
+//        return ResponseEntity.ok(optionalTodoItem.get());
+//    }
+
+
+    private User getLoggedUser() {
+        TodoUserDetails loggedInPrincipal = (TodoUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return loggedInPrincipal.getUser();
+    }
+
 }

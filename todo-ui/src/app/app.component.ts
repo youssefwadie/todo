@@ -7,14 +7,14 @@ import {Router} from "@angular/router";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'todo-ui';
+  title = 'todo-list-ui';
 
   constructor(private router: Router) {
   }
 
   ngOnInit(): void {
     if (sessionStorage.getItem('loggedUser')) {
-      this.router.navigate(['dashboard']);
+      this.router.navigate(['list']);
     } else {
       this.router.navigate(['login']);
     }

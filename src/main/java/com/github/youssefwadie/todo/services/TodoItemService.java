@@ -1,37 +1,47 @@
 package com.github.youssefwadie.todo.services;
 
-import com.github.youssefwadie.todo.dao.todo.TodoDao;
+import com.github.youssefwadie.todo.dao.todo.TodoItemDao;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
-import com.github.youssefwadie.todo.model.Todo;
+import com.github.youssefwadie.todo.model.TodoItem;
 import com.github.youssefwadie.todo.security.util.BasicValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
-public class TodoService {
-    private final TodoDao todoDao;
+public class TodoItemService {
+    private final TodoItemDao todoItemDao;
 
     private final UserService userService;
 
-    public TodoService(TodoDao todoDao, UserService userService) {
-        this.todoDao = todoDao;
+    public TodoItemService(TodoItemDao todoItemDao, UserService userService) {
+        this.todoItemDao = todoItemDao;
         this.userService = userService;
     }
 
-    public List<Todo> findAll(Long userId) {
-        return (List<Todo>) todoDao.findAllByUserId(userId);
+    public List<TodoItem> findAll(Long userId) {
+        return (List<TodoItem>) todoItemDao.findAllByUserId(userId);
     }
 
-    public Todo save(Todo todo) throws ConstraintsViolationException {
-        validateTodo(todo);
-        return todoDao.save(todo);
+    public TodoItem save(TodoItem todoItem) throws ConstraintsViolationException {
+        validateTodo(todoItem, false);
+        return todoItemDao.save(todoItem);
     }
 
-    public void validateTodo(Todo todo) throws ConstraintsViolationException {
+
+    public Optional<TodoItem> findById(Long id, Long userId) {
+        if (!todoItemDao.belongsToUser(id, userId)) {
+            return Optional.empty();
+        }
+
+        return todoItemDao.findById(id);
+    }
+
+    public boolean belongsToUser(Long id, Long userId) {
+        return todoItemDao.belongsToUser(id, userId);
+    }
+
+    private void validateTodo(TodoItem todo, boolean checkDate) throws ConstraintsViolationException {
         Map<String, String> errors = new HashMap<>();
         if (BasicValidator.isBlank(todo.getTitle())) {
             errors.put("title", "Cannot be blank or null");
@@ -51,7 +61,7 @@ public class TodoService {
             }
         }
 
-        if (BasicValidator.isInThePast(todo.getDeadTime())) {
+        if (checkDate && BasicValidator.isInThePast(todo.getDeadTime())) {
             errors.put("deadTime", "deadTime cannot be in the past or empty");
         }
 
