@@ -44,7 +44,7 @@ public class TodoItemDaoImplTests extends BaseDaoTests {
     public void testBelongsToUser() {
         Long userId = 1L;
         Long id = 7L;
-        boolean belongs = todoDao.belongsToUser(id, userId);
+        boolean belongs = todoDao.ownedByUser(id, userId);
         assertThat(belongs).isFalse();
     }
 

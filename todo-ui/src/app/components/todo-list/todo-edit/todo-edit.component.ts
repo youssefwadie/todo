@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {TodoItem} from "../../../model/TodoItem";
 import {NgbActiveModal, NgbDateStruct, NgbTimeStruct} from "@ng-bootstrap/ng-bootstrap";
 import {faCalendarDays} from "@fortawesome/free-regular-svg-icons";
+import {TodoListService} from "../../../services/todo-list.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-todo-edit',
@@ -10,31 +12,47 @@ import {faCalendarDays} from "@fortawesome/free-regular-svg-icons";
 })
 export class TodoEditComponent implements OnInit {
 
-    @Input() todo: TodoItem;
+    @Input() todoItem: TodoItem;
+    formTodoItem: TodoItem;
+    validTitle = true;
     time: NgbTimeStruct;
     date: NgbDateStruct;
     faCalendarDays = faCalendarDays;
 
 
-    constructor(public activeModal: NgbActiveModal) {
+    constructor(public activeModal: NgbActiveModal, private todoListService: TodoListService) {
     }
 
     ngOnInit(): void {
-        let deadTime = this.todo.deadTime;
+        this.formTodoItem = Object.assign({}, this.todoItem);
+
+        let deadTime = this.formTodoItem.deadTime;
         if (deadTime) {
             deadTime = new Date(deadTime);
         } else {
             deadTime = new Date();
         }
-
         this.time = {hour: deadTime.getHours(), minute: deadTime.getMinutes(), second: deadTime.getSeconds()};
         this.date = {year: deadTime.getFullYear(), month: deadTime.getMonth(), day: deadTime.getDay()}
+
+
+        this.checkIfTitleIsValid();
     }
 
     onSubmit(): void {
-        console.log(`Submitting... ${this.todo}`)
-        console.log(`Date: ${this.date.day}-${this.date.month}`);
-        console.log(`Time: ${this.time.hour}:${this.time.minute}:${this.time.second}`);
+        this.formTodoItem.title = this.formTodoItem.title.trim();
+        this.formTodoItem.description = this.formTodoItem.description.trim();
 
+        this.todoListService.updateTodoItemStatus(this.formTodoItem).subscribe({
+                next: value => {
+                    this.todoItem = value
+                },
+                error: err => console.log(err)
+            }
+        );
+    }
+
+    checkIfTitleIsValid(): void {
+        this.validTitle = this.formTodoItem.title.trim().length >= 10;
     }
 }

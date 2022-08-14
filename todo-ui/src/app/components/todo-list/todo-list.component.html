@@ -1,8 +1,8 @@
 <div class="container">
 
   <ul class="list-group">
-    <li *ngFor="let todo of todoList" class="list-group-item rounded p-4 ms-2 me-2 mb-2">
-      <app-todo-detail [todo]="todo"></app-todo-detail>
+    <li *ngFor="let todoItem of todoList$ | async" class="list-group-item rounded p-4 ms-2 me-2 mb-2">
+      <app-todo-detail [todoItem]="todoItem"></app-todo-detail>
     </li>
   </ul>
 
@@ -13,7 +13,7 @@
     </div>
 
     <div class="modal-body">
-      <app-todo-edit [todo]="selectedTodo"></app-todo-edit>
+      <app-todo-edit [todoItem]="selectedTodoItem"></app-todo-edit>
     </div>
   </ng-template>
 </div>

@@ -173,7 +173,7 @@ public class TodoItemDaoImpl implements TodoItemDao {
     }
 
     @Override
-    public boolean belongsToUser(Long id, Long userId) {
+    public boolean ownedByUser(Long id, Long userId) {
         Assert.notNull(id, "Id must not be null!");
         Assert.notNull(userId, "User id must not be null!");
         Boolean belongs = jdbcTemplate.queryForObject(QUERY_CHECK_IF_BELONGS_TO_USER_BY_ID_AND_USER_ID_TEMPLATE, Boolean.class, id, userId);

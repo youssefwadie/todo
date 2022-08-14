@@ -174,7 +174,7 @@ public interface TodoItemDao {
      * @throws IllegalArgumentException if {@literal id} is {@literal null} or {@literal userId} is {@literal null}.
      */
     @Transactional(readOnly = true)
-    boolean belongsToUser(Long id, Long userId);
+    boolean ownedByUser(Long id, Long userId);
 
     /**
      * Sets the todoItem status, done or not

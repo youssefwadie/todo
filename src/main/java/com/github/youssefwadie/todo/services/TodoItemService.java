@@ -24,21 +24,21 @@ public class TodoItemService {
     }
 
     public TodoItem save(TodoItem todoItem) throws ConstraintsViolationException {
+        validateTodo(todoItem, true);
+        return todoItemDao.save(todoItem);
+    }
+
+    public TodoItem update(TodoItem todoItem) throws ConstraintsViolationException {
         validateTodo(todoItem, false);
         return todoItemDao.save(todoItem);
     }
 
-
-    public Optional<TodoItem> findById(Long id, Long userId) {
-        if (!todoItemDao.belongsToUser(id, userId)) {
-            return Optional.empty();
-        }
-
+    public Optional<TodoItem> findById(Long id) {
         return todoItemDao.findById(id);
     }
 
-    public boolean belongsToUser(Long id, Long userId) {
-        return todoItemDao.belongsToUser(id, userId);
+    public boolean notOwnedByUser(Long id, Long userId) {
+        return !todoItemDao.ownedByUser(id, userId);
     }
 
     private void validateTodo(TodoItem todo, boolean checkDate) throws ConstraintsViolationException {
@@ -69,5 +69,9 @@ public class TodoItemService {
         if (!errors.isEmpty()) {
             throw new ConstraintsViolationException(errors);
         }
+    }
+
+    public void setDone(Long id, Boolean done) {
+        todoItemDao.setDone(id, done);
     }
 }

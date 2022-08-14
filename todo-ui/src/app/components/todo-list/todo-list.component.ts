@@ -1,8 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../../model/User";
-import {Subscription} from "rxjs";
-import {DataService} from "../../services/data.service";
+import {Observable} from "rxjs";
 import {TodoItem} from "../../model/TodoItem";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {TodoEditComponent} from "./todo-edit/todo-edit.component";
@@ -16,13 +15,11 @@ import {AuthService} from "../../services/auth.service";
 })
 export class TodoListComponent implements OnInit, OnDestroy {
     user: User;
-    todoEditSubscription: Subscription;
-    selectedTodo: TodoItem;
+    selectedTodoItem: TodoItem;
     action: string;
-    todoList = new Array<TodoItem>();
+    public todoList$: Observable<TodoItem[]>;
 
     constructor(private router: Router,
-                private dataService: DataService,
                 private todoListService: TodoListService,
                 private route: ActivatedRoute,
                 private modalService: NgbModal,
@@ -30,35 +27,27 @@ export class TodoListComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.todoListService.getTodoList().subscribe(
-            res => {
-                if (res) {
-                    res.forEach((todoItem: TodoItem) => this.todoList.push(todoItem));
-                }
-            }
-        );
         if (!this.authService.isLoggedIn()) {
             this.router.navigate(['login']);
             return;
         }
 
+        this.todoList$ = this.todoListService.getTodoList();
+        this.todoListService.init();
         this.user = this.authService.currentUser;
-
-        this.todoEditSubscription = this.dataService.todoEditEvent.subscribe((todo) => {
-            this.selectedTodo = todo;
-        });
         this.route.queryParams.subscribe((params) => {
             const id = params['id'];
             this.action = params['action'];
             if (id) {
                 this.todoListService.findTodoById(+id).subscribe((fetchedTodo) => {
-                        this.selectedTodo = fetchedTodo;
+                        this.selectedTodoItem = fetchedTodo;
                         this.open();
                     }
                 );
-            // } else {
+                // } else {
                 // this.addTodo();
             }
+            console.log(id, this.action)
         });
 
     }
@@ -68,7 +57,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
     }
 
     private addTodo(): void {
-        this.selectedTodo = new TodoItem(undefined, undefined, undefined, undefined);
+        this.selectedTodoItem = new TodoItem(undefined, undefined, undefined, undefined);
         this.router.navigate(['list'], {
             queryParams: {action: 'add'},
         });
@@ -77,7 +66,18 @@ export class TodoListComponent implements OnInit, OnDestroy {
 
     open() {
         const modalRef = this.modalService.open(TodoEditComponent);
-        modalRef.componentInstance.todo = this.selectedTodo;
+        modalRef.componentInstance.todoItem = this.selectedTodoItem;
+        modalRef.result.then(() => {
+        }, reason => {
+            this.router.navigate([], {
+                    relativeTo: this.route,
+                    queryParams: {},
+                });
+        });
+        // modalRef.dismiss((reason: any) => {
+        //     console.log('dismssed');
+        //     this.router.navigate(['list']);
+        // });
     }
 
 

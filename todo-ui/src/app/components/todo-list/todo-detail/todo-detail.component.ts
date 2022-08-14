@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
 import {TodoItem} from "../../../model/TodoItem";
 import {AppConstants} from "../../../constants/app-constants";
 import {faBook, faCheckCircle, faPenSquare} from "@fortawesome/free-solid-svg-icons";
-import {DataService} from "../../../services/data.service";
 import {Router} from "@angular/router";
 import {TodoListService} from "../../../services/todo-list.service";
 
@@ -14,7 +13,7 @@ import {TodoListService} from "../../../services/todo-list.service";
 export class TodoDetailComponent implements OnInit {
 
     @Input()
-    todo: TodoItem;
+    todoItem: TodoItem;
 
     shortTitle: string;
     isCollapsed = true;
@@ -25,31 +24,35 @@ export class TodoDetailComponent implements OnInit {
     faPenSquare = faPenSquare;
 
 
-    constructor(private dataService: DataService, private todoListService: TodoListService, private router: Router) {
+    constructor(private todoListService: TodoListService, private router: Router) {
     }
 
     ngOnInit(): void {
-        if (this.todo) {
-            this.deadTime = new Date(this.todo.deadTime).toLocaleDateString(AppConstants.LOCALES_ARGUMENT, AppConstants.DATE_TIME_FORMAT_OPTIONS);
-            if (this.todo.title.length > 70) {
-                this.shortTitle = this.todo.title.slice(0, 70) + '...';
+        if (this.todoItem) {
+            this.deadTime = new Date(this.todoItem.deadTime).toLocaleDateString(AppConstants.LOCALES_ARGUMENT, AppConstants.DATE_TIME_FORMAT_OPTIONS);
+            if (this.todoItem.title.length > 70) {
+                this.shortTitle = this.todoItem.title.slice(0, 70) + '...';
             } else {
-                this.shortTitle = this.todo.title;
+                this.shortTitle = this.todoItem.title;
             }
         }
     }
 
     toggleTodo(): void {
-        this.todo.done = !this.todo.done;
-        this.todoListService.updateTodo(this.todo)
-            .subscribe((updatedTodo) => {
-                this.todo = updatedTodo;
-                this.router.navigate(['list']);
+        this.todoItem.done = !this.todoItem.done;
+        this.todoListService.updateTodoItemStatus(this.todoItem)
+            .subscribe({
+                next: (updatedTodo) => {
+                    console.log(updatedTodo);
+                    this.router.navigate(['list']);
+                }, error: err => {
+                    this.todoItem.done = !this.todoItem.done
+                    console.log(err);
+                }
             });
     }
 
     editTodo(): void {
-        this.router.navigate(['list'], {queryParams: {'id': this.todo.id, 'action': 'edit'}})
+        this.router.navigate(['list'], {queryParams: {'id': this.todoItem.id, 'action': 'edit'}});
     }
-
 }

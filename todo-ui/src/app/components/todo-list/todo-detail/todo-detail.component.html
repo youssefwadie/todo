@@ -1,15 +1,15 @@
 <div class="d-flex justify-content-between">
   <a (click)="toggleTodo()" class="me-1" [ngClass]="{
-      'icon-green': todo.done,
-      'icon-dark': !todo.done
+      'icon-green': todoItem.done,
+      'icon-dark': !todoItem.done
     }">
     <fa-icon [icon]="faCheckCircle" size="lg"></fa-icon>
   </a>
 
   <div class="ms-2 me-auto">
     <div *ngIf="!isCollapsed" class="fw-bold">{{shortTitle}}</div>
-    <div *ngIf="isCollapsed" class="fw-bold">{{todo.title}}</div>
-    <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="lead">{{todo.description}}</div>
+    <div *ngIf="isCollapsed" class="fw-bold">{{todoItem.title}}</div>
+    <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="lead">{{todoItem.description}}</div>
   </div>
 
 
@@ -19,7 +19,7 @@
             (click)="collapse.toggle()" [attr.aria-expanded]="!isCollapsed">
       <fa-icon [icon]="faBook" class="icon-gray"></fa-icon>
     </button>
-    <a (click)="editTodo()" class="btn btn-sm btn-outline-secondary btn-link p-1" title="Edit {{todo.title}}">
+    <a (click)="editTodo()" class="btn btn-sm btn-outline-secondary btn-link p-1" title="Edit {{todoItem.title}}">
       <fa-icon [icon]="faPenSquare" class="icon-gray"></fa-icon>
     </a>
 

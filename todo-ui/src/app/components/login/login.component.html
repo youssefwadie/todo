@@ -28,7 +28,7 @@
       />
     </div>
     <div *ngIf="!validLogin" class="alert alert-danger">
-      Invalid Email or Password
+      {{errorMessage}}
     </div>
     <button type="button" class="btn btn-primary btn-full mt-3" [disabled]="loginForm.invalid" (click)="onLogin()">
       Log In

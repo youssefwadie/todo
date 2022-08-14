@@ -1,46 +1,55 @@
-<form class="p-3" #todoForm="ngForm" (submit)="onSubmit()">
-  <div class="modal-header">
-    <h4 class="modal-title">Editing</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <div class="mb-3">
-      <input
-        (keydown.enter)="todoForm.valid && onSubmit()" type="text" pattern=".{10,}" class="form-control rounded p-2"
-        id="title" [(ngModel)]="todo.title" name="title"
-        placeholder="Title" required/>
+<form class="p-3" #taskForm="ngForm" (submit)="onSubmit()">
+    <div class="modal-header">
+        <h4 class="modal-title">Editing</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+                (click)="activeModal.dismiss('Cross click')"></button>
     </div>
-    <div class="mb-3">
+    <div class="modal-body">
+        <div class="mb-3">
+            <input
+                    id="title"
+                    name="title"
+                    (keydown.enter)="taskForm.valid && onSubmit()"
+                    type="text"
+                    (change)="checkIfTitleIsValid()"
+                    class="form-control rounded p-2"
+                    [(ngModel)]="formTodoItem.title"
+                    placeholder="Title" required/>
+        </div>
+        <div class="mb-3">
   <textarea
-    (keydown.enter)="todoForm.valid && onSubmit()"
-    class="form-control rounded p-2 mb-2"
-    id="description"
-    name="description"
-    [(ngModel)]="todo.description"
-    placeholder="Description"
-    required></textarea>
+          (keydown.enter)="taskForm.valid && onSubmit()"
+          class="form-control rounded p-2 mb-2"
+          id="description"
+          name="description"
+          [(ngModel)]="formTodoItem.description"
+          placeholder="Description"
+          required></textarea>
+        </div>
+        <div class="input-group">
+            <label class="input-group-text">Dead Time</label>
+            <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                       name="dp" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker">
+                <button class="btn btn-outline-secondary input-group-text" (click)="d.toggle()" type="button">
+                    <fa-icon [icon]="faCalendarDays"></fa-icon>
+                </button>
+            </div>
+
+            <ngb-timepicker class="small" title="Hour" name="time" [(ngModel)]="time"></ngb-timepicker>
+
+        </div>
     </div>
-    <div class="input-group">
-      <label class="input-group-text">Dead Time</label>
-      <div class="input-group">
-        <input class="form-control" placeholder="yyyy-mm-dd"
-               name="dp" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker">
-        <button class="btn btn-outline-secondary input-group-text" (click)="d.toggle()" type="button">
-          <fa-icon [icon]="faCalendarDays"></fa-icon>
+
+    <div *ngIf="!validTitle" class="alert alert-danger">
+        Title must be at least 10 characters, ignoring the leading and trailing spaces.
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-full mt-3" [disabled]="taskForm.invalid"
+                (click)="activeModal.close('Save Click');onSubmit();">
+            Save
         </button>
-      </div>
-
-      <ngb-timepicker class="small" title="Hour" [(ngModel)]="time"></ngb-timepicker>
-
     </div>
-  </div>
-
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary btn-full mt-3" [disabled]="todoForm.invalid"
-            (click)="activeModal.close('Save Click');onSubmit();">
-      Save
-    </button>
-  </div>
 </form>
 

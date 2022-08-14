@@ -37,12 +37,9 @@ public class TodoListController {
     public ResponseEntity<?> createTodo(@RequestBody TodoItem todo) throws URISyntaxException {
         try {
             User loggedUser = getLoggedUser();
-
             todo.setUserId(loggedUser.getId());
             TodoItem savedTodo = todoItemService.save(todo);
-
             URI saveTodoURI = new URI("/api/v1/todo/" + savedTodo.getId());
-
             return ResponseEntity.created(saveTodoURI).body(savedTodo);
         } catch (ConstraintsViolationException ex) {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(ex.getErrors());
@@ -52,42 +49,42 @@ public class TodoListController {
     @GetMapping(path = "/{id:\\d+}")
     public ResponseEntity<?> getTodoById(@PathVariable("id") Long id) {
         User loggedUser = getLoggedUser();
-        Optional<TodoItem> optionalTodoItem = todoItemService.findById(id, loggedUser.getId());
-        if (optionalTodoItem.isEmpty()) {
-            SimpleResponseBody responseBody = new SimpleResponseBody
-                    .Builder(HttpStatus.NO_CONTENT.value(), HttpStatus.NOT_FOUND.getReasonPhrase())
-                    .setMessage("No TodoItem with id: %d was found".formatted(id))
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        if (todoItemService.notOwnedByUser(id, loggedUser.getId())) {
+            return notFoundTodoItem(id);
         }
+
+        Optional<TodoItem> optionalTodoItem = todoItemService.findById(id);
+        // if it got here, the item will eventually be there
         return ResponseEntity.ok(optionalTodoItem.get());
     }
 
     @PutMapping("/id:\\d+")
     public ResponseEntity<?> updateTodoItem(@RequestBody TodoItem todoItem) throws ConstraintsViolationException {
         User loggedUser = getLoggedUser();
-        if (!todoItemService.belongsToUser(todoItem.getId(), loggedUser.getId())) {
+        if (todoItemService.notOwnedByUser(todoItem.getId(), loggedUser.getId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok(todoItemService.save(todoItem));
+        return ResponseEntity.ok(todoItemService.update(todoItem));
     }
 
-//    @GetMapping(path = "/{id:\\d+}/{done:true|false}")
-//    public ResponseEntity<?> toggleDone(@PathVariable("id") Long id, @PathVariable("done") Boolean done) {
-//        User loggedUser = getLoggedUser();
-//        Optional<TodoItem> optionalTodoItem = todoService.setDone(id, done, loggedUser.getId());
-//        if (optionalTodoItem.isEmpty()) {
-//            SimpleResponseBody responseBody = new SimpleResponseBody
-//                    .Builder(HttpStatus.NO_CONTENT.value(), HttpStatus.NOT_FOUND.getReasonPhrase())
-//                    .setMessage("No TodoItem with id: %d was found".formatted(id))
-//                    .build();
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
-//        }
-//
-//        return ResponseEntity.ok(optionalTodoItem.get());
-//    }
+    @PutMapping(path = "/{id:\\d+}/{done:true|false}")
+    public ResponseEntity<?> updateTodoItemStatus(@PathVariable("id") Long id, @PathVariable("done") boolean done) {
+        User loggedUser = getLoggedUser();
 
+        if (todoItemService.notOwnedByUser(id, loggedUser.getId())) {
+            return notFoundTodoItem(id);
+        }
+        todoItemService.setDone(id, done);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    private ResponseEntity<?> notFoundTodoItem(Long id) {
+        SimpleResponseBody responseBody = new SimpleResponseBody
+                .Builder(HttpStatus.NO_CONTENT.value(), HttpStatus.NOT_FOUND.getReasonPhrase())
+                .setMessage("No TodoItem with id: %d was found".formatted(id))
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+    }
 
     private User getLoggedUser() {
         TodoUserDetails loggedInPrincipal = (TodoUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
