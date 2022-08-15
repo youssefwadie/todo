@@ -1,24 +1,22 @@
 package com.github.youssefwadie.todo.security.filters;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.youssefwadie.todo.config.TokenProperties;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import io.jsonwebtoken.Jwts;
+import org.springframework.boot.web.server.Cookie;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.github.youssefwadie.todo.constants.SecurityConstants.*;
 
@@ -60,19 +58,15 @@ public class JWTGeneratorFilter extends OncePerRequestFilter {
                     .compact();
 
 
-            Map<String, String> accessAndRefreshTokens = new HashMap<>();
-            accessAndRefreshTokens.put(JWT_ACCESS_TOKEN, accessToken);
-            Cookie refreshTokenCookie = new Cookie(tokenProperties.getRefreshTokenCookieName(), refreshToken);
-            refreshTokenCookie.setSecure(true);
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setMaxAge(tokenProperties.getRefreshTokenCookieAge());
-            response.addCookie(refreshTokenCookie);
+            ResponseCookie cookie = ResponseCookie.from(tokenProperties.getRefreshTokenCookieName(), refreshToken)
+                    .sameSite(Cookie.SameSite.LAX.attributeValue())
+                    .secure(true)
+                    .httpOnly(true)
+                    .maxAge(tokenProperties.getRefreshTokenCookieAge())
+                    .build();
 
-
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            OutputStream responseOutputStream = response.getOutputStream();
-            new ObjectMapper().writeValue(responseOutputStream, accessAndRefreshTokens);
-            responseOutputStream.close();
+            response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            response.setHeader(tokenProperties.getAccessTokenHeaderNameGeneratedByServer(), accessToken);
         }
         filterChain.doFilter(request, response);
 

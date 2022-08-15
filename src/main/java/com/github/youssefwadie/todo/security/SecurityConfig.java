@@ -1,11 +1,9 @@
 package com.github.youssefwadie.todo.security;
 
 
-import com.github.youssefwadie.todo.config.TokenProperties;
-import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
-import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
-import com.github.youssefwadie.todo.security.util.JwtUtils;
-import lombok.AllArgsConstructor;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,7 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.Collections;
+import com.github.youssefwadie.todo.config.TokenProperties;
+import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
+import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
+import com.github.youssefwadie.todo.security.util.JwtUtils;
+
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Configuration
@@ -39,7 +42,7 @@ public class SecurityConfig {
             configuration.setAllowCredentials(true);
             configuration.setAllowedHeaders(Collections.singletonList("*"));
             configuration.setAllowedMethods(Collections.singletonList("*"));
-            configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+            configuration.setExposedHeaders(List.of("Authorization", "X-Access-Token"));
             configuration.setMaxAge(3600L);
             return configuration;
         });

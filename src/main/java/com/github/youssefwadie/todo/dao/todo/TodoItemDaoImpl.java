@@ -56,30 +56,30 @@ public class TodoItemDaoImpl implements TodoItemDao {
 
 
     @Override
-    public TodoItem save(TodoItem todo) {
-        Assert.notNull(todo, "Todo must not be null!");
-        if (todo.getId() != null) {
+    public TodoItem save(TodoItem todoItem) {
+        Assert.notNull(todoItem, "Todo must not be null!");
+        if (todoItem.getId() != null) {
             jdbcTemplate.update(UPDATE_TODO_ITEM_BY_ID_TEMPLATE,
-                    todo.getTitle(),
-                    todo.getDescription(),
-                    todo.getDeadTime(),
-                    todo.getDone(),
-                    todo.getId());
+                    todoItem.getTitle(),
+                    todoItem.getDescription(),
+                    todoItem.getDeadTime(),
+                    todoItem.getDone(),
+                    todoItem.getId());
 
-            return todo;
+            return todoItem;
         }
 
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement preparedStatement = con.prepareStatement(INSERT_TODO_ITEM_TEMPLATE, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, todo.getTitle());
-            preparedStatement.setString(2, todo.getDescription());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(todo.getDeadTime()));
-            preparedStatement.setLong(4, todo.getUserId());
+            preparedStatement.setString(1, todoItem.getTitle());
+            preparedStatement.setString(2, todoItem.getDescription());
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(todoItem.getDeadTime()));
+            preparedStatement.setLong(4, todoItem.getUserId());
             return preparedStatement;
         }, keyHolder);
-        Long updatedTodoId = keyHolder.getKey() != null ? keyHolder.getKey().longValue() : todo.getId();
+        Long updatedTodoId = keyHolder.getKey() != null ? keyHolder.getKey().longValue() : todoItem.getId();
 
         return findById(updatedTodoId).orElseThrow(() -> new IncorrectResultSetColumnCountException(1, 0));
     }
@@ -96,11 +96,11 @@ public class TodoItemDaoImpl implements TodoItemDao {
     @Override
     public Optional<TodoItem> findById(Long id) {
         Assert.notNull(id, "Id must not be null!");
-        TodoItem todo = jdbcTemplate.queryForObject(QUERY_FIND_BY_ID_TEMPLATE, rowMapper, id);
-        if (todo == null) {
+        TodoItem todoItem = jdbcTemplate.queryForObject(QUERY_FIND_BY_ID_TEMPLATE, rowMapper, id);
+        if (todoItem  == null) {
             return Optional.empty();
         }
-        return Optional.of(todo);
+        return Optional.of(todoItem );
     }
 
     @Override

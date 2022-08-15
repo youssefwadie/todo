@@ -35,7 +35,7 @@ public class UserController {
     }
 
 
-    @GetMapping(value = "/refresh", produces = "application/json")
+    @GetMapping(value = "/refresh")
     public ResponseEntity<Object> refreshToken(HttpServletRequest request) {
 
         Cookie refreshTokenCookie = getAccessTokenCookie(request.getCookies());
@@ -65,11 +65,10 @@ public class UserController {
 
             SimpleResponseBody token = new SimpleResponseBody
                     .Builder(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase())
-                    .setMessage("access token is refreshed, can be found in header: %s, `%s access-token`".formatted(tokenProperties.getHeaderName(), tokenProperties.getAuthenticationScheme()))
+                    .setMessage("access token is refreshed, can be found in header: %s`".formatted(tokenProperties.getAccessTokenHeaderNameGeneratedByServer()))
                     .build();
 
-            return ResponseEntity.status(HttpStatus.OK).header(tokenProperties.getHeaderName(),
-                    tokenProperties.getAuthenticationScheme() + " " + accessToken).body(token);
+            return ResponseEntity.status(HttpStatus.OK).header(tokenProperties.getAccessTokenHeaderNameGeneratedByServer(), accessToken).body(token);
 
         } catch (Exception ex) {
             SimpleResponseBody error = new SimpleResponseBody

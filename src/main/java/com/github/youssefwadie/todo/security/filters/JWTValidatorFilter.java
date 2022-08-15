@@ -39,7 +39,7 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String jwt = request.getHeader(tokenProperties.getHeaderName());
+        String jwt = request.getHeader(tokenProperties.getAccessTokenHeaderNameSentByClient());
         if (jwt != null) {
             try {
                 jwt = jwtUtils.extractAccessToken(jwt);
@@ -69,7 +69,7 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String authorizationHeader = request.getHeader(tokenProperties.getHeaderName());
+        String authorizationHeader = request.getHeader(tokenProperties.getAccessTokenHeaderNameSentByClient());
         String requestPath = request.getServletPath();
         System.out.println(requestPath);
         if (authorizationHeader != null) {

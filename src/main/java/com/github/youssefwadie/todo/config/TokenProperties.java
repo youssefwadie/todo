@@ -13,7 +13,8 @@ import java.nio.charset.StandardCharsets;
 @Setter
 @ConfigurationProperties(prefix = "token")
 public class TokenProperties {
-    private String headerName;
+    private String accessTokenHeaderNameSentByClient;
+    private String accessTokenHeaderNameGeneratedByServer;
     private String key;
     private int accessTokenLifeTime;
 
@@ -27,7 +28,8 @@ public class TokenProperties {
     private String refreshTokenCookieName;
 
     public TokenProperties() {
-        this.headerName = "Authorization";
+        this.accessTokenHeaderNameSentByClient = "Authorization";
+        this.accessTokenHeaderNameGeneratedByServer = "X-Access-Token";
         this.key = "jxgE#*($#Qe_XH!uPq8Vdby@YFNkANd^u3dQ53YU%n4B";
         this.accessTokenLifeTime = 300_000; // 5 minutes (in ms)
         this.secretKey = null;

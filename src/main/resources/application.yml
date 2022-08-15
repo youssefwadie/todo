@@ -20,10 +20,11 @@ logging:
     com.zaxxer.hikari.pool: DEBUG
 
 token:
-  header-name: Authorization
+  access-token-header-name-sent-by-client: Authorization
+  access-token-header-name-generated-by-server: X-Access-Token
   authentication-scheme: Bearer
   key: jAOa=kms)dLxgE#*($#Qe_XH!uPq8Vdby@YlnvkANox^u3dQ53YU%n4B
-  access-token-life-time: 900000
+  access-token-life-time: 60000
   refresh-token-life-time: 2592000000
   refresh-token-cookie-name: refresh-token
 

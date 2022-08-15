@@ -57,6 +57,6 @@ public class TokenPropertiesTests {
 
     @Test
     void testJwtHeaderNameIsSet() {
-        assertThat(tokenProperties.getHeaderName()).isEqualTo("Authorization");
+        assertThat(tokenProperties.getAccessTokenHeaderNameSentByClient()).isEqualTo("Authorization");
     }
 }
