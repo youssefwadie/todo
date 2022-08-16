@@ -1,11 +1,10 @@
 package com.github.youssefwadie.todo.security.filters;
 
-import com.github.youssefwadie.todo.config.TokenProperties;
+import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import io.jsonwebtoken.Jwts;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

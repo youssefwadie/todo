@@ -1,6 +1,6 @@
 package com.github.youssefwadie.todo.security.util;
 
-import com.github.youssefwadie.todo.config.TokenProperties;
+import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.constants.SecurityConstants;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.exceptions.InvalidAuthenticationSchemeException;
@@ -48,7 +48,7 @@ public class JwtUtils {
         return Optional.of(token.substring(0, spaceIndex));
     }
 
-    public User parseUser(String jwt, TOKEN_TYPE type) throws InvalidJwtTokenTypeException {
+    public User parseUser(String jwt, TOKEN_TYPE expectedTokenType) throws InvalidJwtTokenTypeException {
         Assert.notNull(jwt, "jwt should not be null!");
         Claims claims = Jwts.parserBuilder().setSigningKey(this.tokenProperties.getSecretKey()).build().parseClaimsJws(jwt)
                 .getBody();
@@ -59,10 +59,10 @@ public class JwtUtils {
                     "Expected token type to be one of %s".formatted(Arrays.toString(TOKEN_TYPE.values())));
         }
         try {
-            TOKEN_TYPE tokenType = TOKEN_TYPE.valueOf(tokenTypeClaim);
-            if (!tokenType.equals(type)) {
+            TOKEN_TYPE actualTokenType = TOKEN_TYPE.valueOf(tokenTypeClaim);
+            if (!actualTokenType.equals(expectedTokenType)) {
                 throw new InvalidJwtTokenTypeException(
-                        "Expected token type: %s, found: %s".formatted(type, tokenType));
+                        "Expected token type: %s, found: %s".formatted(expectedTokenType, actualTokenType));
             }
             Long id = claims.get(SecurityConstants.USER_ID_CLAIM_NAME, Long.class);
             String email = claims.getSubject();

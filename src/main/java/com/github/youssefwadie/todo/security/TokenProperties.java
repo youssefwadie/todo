@@ -1,4 +1,4 @@
-package com.github.youssefwadie.todo.config;
+package com.github.youssefwadie.todo.security;
 
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "token")
+@ConfigurationProperties(prefix = "app.token")
 public class TokenProperties {
     private String accessTokenHeaderNameSentByClient;
     private String accessTokenHeaderNameGeneratedByServer;

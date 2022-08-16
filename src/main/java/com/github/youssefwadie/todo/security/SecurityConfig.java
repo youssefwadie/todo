@@ -4,6 +4,7 @@ package com.github.youssefwadie.todo.security;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import com.github.youssefwadie.todo.config.TokenProperties;
 import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
 import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
 import com.github.youssefwadie.todo.security.util.JwtUtils;
@@ -26,6 +26,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Configuration
 @EnableWebSecurity(debug = true)
+@EnableConfigurationProperties(TokenProperties.class)
 public class SecurityConfig {
 
     private final TokenProperties tokenProperties;

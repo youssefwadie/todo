@@ -1,7 +1,7 @@
 package com.github.youssefwadie.todo.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.youssefwadie.todo.config.TokenProperties;
+import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.security.util.JwtUtils;

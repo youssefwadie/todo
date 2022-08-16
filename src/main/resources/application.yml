@@ -5,6 +5,15 @@ app:
     username: appuser
     password: password
     maximum-pool-size: 15
+  token:
+    access-token-header-name-sent-by-client: Authorization
+    access-token-header-name-generated-by-server: X-Access-Token
+    authentication-scheme: Bearer
+    key: jAOa=kms)dLxgE#*($#Qe_XH!uPq8Vdby@YlnvkANox^u3dQ53YU%n4B
+    access-token-life-time: 60000
+    refresh-token-life-time: 2592000000
+    refresh-token-cookie-name: refresh-token
+
 
 server:
   port: 8080
@@ -18,14 +27,5 @@ logging:
   level:
     org.springframework.security.web.FilterChainProxy: DEBUG
     com.zaxxer.hikari.pool: DEBUG
-
-token:
-  access-token-header-name-sent-by-client: Authorization
-  access-token-header-name-generated-by-server: X-Access-Token
-  authentication-scheme: Bearer
-  key: jAOa=kms)dLxgE#*($#Qe_XH!uPq8Vdby@YlnvkANox^u3dQ53YU%n4B
-  access-token-life-time: 60000
-  refresh-token-life-time: 2592000000
-  refresh-token-cookie-name: refresh-token
 
 

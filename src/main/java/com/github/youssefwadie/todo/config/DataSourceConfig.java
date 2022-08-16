@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableConfigurationProperties(TokenProperties.class)
 @EnableJdbcRepositories(basePackages = "com.github.youssefwadie.todo.dao")
 public class DataSourceConfig {
 

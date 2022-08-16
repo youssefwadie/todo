@@ -1,7 +1,7 @@
 package com.github.youssefwadie.todo.controllers;
 
 
-import com.github.youssefwadie.todo.config.TokenProperties;
+import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.constants.SecurityConstants;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.model.User;
