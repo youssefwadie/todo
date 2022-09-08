@@ -2,7 +2,6 @@ package com.github.youssefwadie.todo.dao.user;
 
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.util.BasicValidator;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.util.Streamable;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,15 +13,18 @@ import org.springframework.util.Assert;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-@Primary
 public class UserDaoImpl implements UserDao {
-    public static final String INSERT_USER_TEMPLATE = "INSERT INTO users (email, password) VALUES (?, ?)";
+    public static final String INSERT_NEW_USER_TEMPLATE = "INSERT INTO users (email, password, created_at, updated_at) VALUES (?, ?, ?, ?)";
+    public static final String UPDATE_USER_TEMPLATE = "UPDATE users SET email = ?, password = ?, updated_at = ? WHERE id = ?";
+
     public static final String QUERY_FIND_BY_ID_TEMPLATE = "SELECT * FROM users WHERE id = ?";
     public static final String QUERY_FIND_BY_EMAIL_TEMPLATE = "SELECT * FROM users WHERE email = ?";
     public static final String QUERY_CHECK_IF_EXISTS_BY_EMAIL_TEMPLATE = "SELECT COUNT(id) > 0 FROM users WHERE email = ?";
@@ -154,14 +156,30 @@ public class UserDaoImpl implements UserDao {
         Assert.notNull(user, "The saved user must not be null!");
 
         final KeyHolder keyHolder = new GeneratedKeyHolder();
+        if (user.getId() != null && existsById(user.getId())) {
+            System.out.println("updating...");
+            jdbcTemplate.update(con -> {
+                PreparedStatement preparedStatement = con.prepareStatement(UPDATE_USER_TEMPLATE, Statement.RETURN_GENERATED_KEYS);
+                preparedStatement.setString(1, user.getEmail());
+                preparedStatement.setString(2, user.getPassword());
+                preparedStatement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setLong(4, user.getId());
+                return preparedStatement;
+            });
+        } else {
+            System.out.println("saving...");
+            jdbcTemplate.update(con -> {
+                PreparedStatement preparedStatement = con.prepareStatement(INSERT_NEW_USER_TEMPLATE, Statement.RETURN_GENERATED_KEYS);
+                preparedStatement.setString(1, user.getEmail());
+                preparedStatement.setString(2, user.getPassword());
+                preparedStatement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setTimestamp(4, null);
+                return preparedStatement;
+            }, keyHolder);
 
-        jdbcTemplate.update(con -> {
-            PreparedStatement preparedStatement = con.prepareStatement(INSERT_USER_TEMPLATE, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, user.getEmail());
-            preparedStatement.setString(2, user.getPassword());
-            return preparedStatement;
-        }, keyHolder);
+        }
         Long updatedUserId = keyHolder.getKey() != null ? keyHolder.getKey().longValue() : user.getId();
+        System.out.println("key = " + updatedUserId);
         return findById(updatedUserId).orElseThrow(() -> new IncorrectResultSetColumnCountException(1, 0));
     }
 }

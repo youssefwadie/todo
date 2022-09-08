@@ -24,12 +24,12 @@ public class TodoItemService {
     }
 
     public TodoItem save(TodoItem todoItem) throws ConstraintsViolationException {
-        validateTodo(todoItem, true);
+        validateTodo(todoItem, true, true);
         return todoItemDao.save(todoItem);
     }
 
     public TodoItem update(TodoItem todoItem) throws ConstraintsViolationException {
-        validateTodo(todoItem, false);
+        validateTodo(todoItem, false, true);
         return todoItemDao.save(todoItem);
     }
 
@@ -41,8 +41,12 @@ public class TodoItemService {
         return !todoItemDao.ownedByUser(id, userId);
     }
 
-    private void validateTodo(TodoItem todo, boolean checkDate) throws ConstraintsViolationException {
+    private void validateTodo(TodoItem todo, boolean checkDate, boolean newItem) throws ConstraintsViolationException {
         Map<String, String> errors = new HashMap<>();
+        if (newItem) {
+            todo.setId(null);
+        }
+
         if (BasicValidator.isBlank(todo.getTitle())) {
             errors.put("title", "Cannot be blank or null");
         }
@@ -64,7 +68,6 @@ public class TodoItemService {
         if (checkDate && BasicValidator.isInThePast(todo.getDeadTime())) {
             errors.put("deadTime", "deadTime cannot be in the past or empty");
         }
-
 
         if (!errors.isEmpty()) {
             throw new ConstraintsViolationException(errors);

@@ -1,5 +1,8 @@
 package com.github.youssefwadie.todo.security.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.constants.SecurityConstants;
 import com.github.youssefwadie.todo.model.User;
@@ -11,7 +14,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Optional;
 
 @Component
@@ -66,11 +73,39 @@ public class JwtUtils {
             }
             Long id = claims.get(SecurityConstants.USER_ID_CLAIM_NAME, Long.class);
             String email = claims.getSubject();
-            return new User(id, email, "");
+            return new User(id, email, "", null, null);
         } catch (IllegalArgumentException ex) {
             throw new InvalidJwtTokenTypeException("Expected token type to be one of %s, found: %s"
                     .formatted(Arrays.toString(TOKEN_TYPE.values()), tokenTypeClaim));
         }
 
+    }
+
+    public LocalDateTime getIssueAt(String jwt) throws JsonProcessingException {
+        int indexOfBodyStart = jwt.indexOf(".");
+        if (indexOfBodyStart == -1) {
+            throw new IllegalArgumentException("Invalid token header.");
+        }
+        int indexOfBodyEnd = jwt.indexOf(".", indexOfBodyStart + 1);
+        if (indexOfBodyEnd == -1) {
+            throw new IllegalArgumentException("Invalid token header.");
+        }
+        String encodedBody = jwt.substring(indexOfBodyStart + 1, indexOfBodyEnd);
+        Base64.Decoder base64Decoder = Base64.getDecoder();
+        String decodedBody = new String(base64Decoder.decode(encodedBody));
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode node = objectMapper.readTree(decodedBody);
+        JsonNode iatNode = node.get("iat");
+
+        if (iatNode == null) {
+            throw new IllegalArgumentException("Invalid token, iat claim is missing");
+        }
+
+        if (!iatNode.canConvertToLong()) {
+            throw new IllegalArgumentException("Invalid claim, iat is not in seconds");
+        }
+
+        long iat = Long.parseLong(iatNode.toString());
+        return LocalDateTime.ofInstant(Instant.ofEpochSecond(iat), ZoneId.systemDefault());
     }
 }

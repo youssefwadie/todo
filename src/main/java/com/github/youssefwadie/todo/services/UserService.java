@@ -23,6 +23,9 @@ public class UserService {
 
 
     public User addUser(User user) throws ConstraintsViolationException {
+        if (user.getId() != null) {
+            user.setId(null);
+        }
         validateUser(user);
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 
@@ -57,8 +60,8 @@ public class UserService {
             }
         }
 
-        if (BasicValidator.isBlank(user.getPassword())) {
-            errors.put("password", "cannot be blank");
+        if (BasicValidator.isBlank(user.getPassword()) || BasicValidator.stringsSizeNotBetween(user.getPassword(), 8, 64)) {
+            errors.put("password", "cannot be blank, min size = 8, max size = 64");
         }
 
         // new user

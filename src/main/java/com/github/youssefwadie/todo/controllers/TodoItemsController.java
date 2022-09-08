@@ -18,11 +18,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/todo", produces = "application/json")
-public class TodoListController {
+public class TodoItemsController {
 
     private final TodoItemService todoItemService;
 
-    public TodoListController(TodoItemService todoItemService) {
+    public TodoItemsController(TodoItemService todoItemService) {
         this.todoItemService = todoItemService;
     }
 
@@ -33,7 +33,7 @@ public class TodoListController {
     }
 
 
-    @PutMapping(path = "", produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "", produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> createTodo(@RequestBody TodoItem todo) throws URISyntaxException {
         try {
             User loggedUser = getLoggedUser();

@@ -1,7 +1,7 @@
 app:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    jdbc-url: jdbc:mariadb://localhost:3306/todo
+    jdbc-url: jdbc:mariadb://localhost:3306/tododb
     username: appuser
     password: password
     maximum-pool-size: 15
@@ -10,7 +10,7 @@ app:
     access-token-header-name-generated-by-server: X-Access-Token
     authentication-scheme: Bearer
     key: jAOa=kms)dLxgE#*($#Qe_XH!uPq8Vdby@YlnvkANox^u3dQ53YU%n4B
-    access-token-life-time: 60000
+    access-token-life-time: 900000
     refresh-token-life-time: 2592000000
     refresh-token-cookie-name: refresh-token
 
@@ -23,9 +23,9 @@ server:
 
 
 
-logging:
-  level:
-    org.springframework.security.web.FilterChainProxy: DEBUG
-    com.zaxxer.hikari.pool: DEBUG
-
+#logging:
+#  level:
+#    org.springframework.security.web.FilterChainProxy: DEBUG
+#    com.zaxxer.hikari.pool: DEBUG
+#
 

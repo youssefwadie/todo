@@ -1,6 +1,5 @@
 package com.github.youssefwadie.todo.security;
 
-
 import java.util.Collections;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,13 +23,12 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Configuration
-@EnableWebSecurity(debug = true)
+//@EnableWebSecurity(debug = true)
 @EnableConfigurationProperties(TokenProperties.class)
 public class SecurityConfig {
 
     private final TokenProperties tokenProperties;
     private final JwtUtils jwtUtils;
-
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -56,7 +53,7 @@ public class SecurityConfig {
 
         http.authorizeRequests(request -> {
             request.antMatchers(HttpMethod.GET, "/users/refresh").permitAll();
-            request.antMatchers(HttpMethod.PUT, "/users").permitAll();
+            request.antMatchers(HttpMethod.POST, "/users").permitAll();
             request.anyRequest().authenticated();
         });
 
@@ -65,12 +62,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
     JWTValidatorFilter jwtValidatorFilter() {
         return new JWTValidatorFilter(tokenProperties, jwtUtils);
     }
 
-    @Bean
     JWTGeneratorFilter jwtGeneratorFilter() {
         return new JWTGeneratorFilter(tokenProperties);
     }
@@ -79,6 +74,5 @@ public class SecurityConfig {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
-
 
 }

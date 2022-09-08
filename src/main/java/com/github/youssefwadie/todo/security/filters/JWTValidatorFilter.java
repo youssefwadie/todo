@@ -76,6 +76,7 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
             return !authorizationHeader.startsWith(tokenProperties.getAuthenticationScheme())
                     || requestPath.equals("/users/refresh");
         }
-        return super.shouldNotFilter(request);
+
+        return true;
     }
 }

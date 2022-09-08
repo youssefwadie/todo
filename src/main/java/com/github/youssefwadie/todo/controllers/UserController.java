@@ -1,11 +1,11 @@
 package com.github.youssefwadie.todo.controllers;
 
 
-import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.constants.SecurityConstants;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
+import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.security.util.JwtUtils;
 import com.github.youssefwadie.todo.services.UserService;
 import com.github.youssefwadie.todo.util.SimpleResponseBody;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @RestController
@@ -41,22 +42,24 @@ public class UserController {
         Cookie refreshTokenCookie = getAccessTokenCookie(request.getCookies());
 
         if (refreshTokenCookie == null) {
-            SimpleResponseBody simpleResponseBody = new SimpleResponseBody
-                    .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                    .setMessage("Expected %s cookie".formatted(tokenProperties.getRefreshTokenCookieName()))
-                    .build();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(simpleResponseBody);
+            return unauthorizedResponse("Expected %s cookie".formatted(tokenProperties.getRefreshTokenCookieName()));
         }
 
-        try {
-            String authorizationHeader = refreshTokenCookie.getValue();
 
-            User user = jwtUtils.parseUser(authorizationHeader, JwtUtils.TOKEN_TYPE.REFRESH);
+        String jwt = refreshTokenCookie.getValue();
+        try {
+            LocalDateTime issueAt = jwtUtils.getIssueAt(jwt);
+            User parsedUser = jwtUtils.parseUser(jwt, JwtUtils.TOKEN_TYPE.REFRESH);
+            User userInDB = service.findById(parsedUser.getId());
+            if (userInDB.getUpdatedAt().isAfter(issueAt)) {
+                return unauthorizedResponse("user details has been changed, please re-login.");
+            }
+
             Date now = new Date();
             String accessToken = Jwts.builder()
                     .setIssuer("Todo")
-                    .setSubject(user.getEmail())
-                    .claim(SecurityConstants.USER_ID_CLAIM_NAME, user.getId())
+                    .setSubject(userInDB.getEmail())
+                    .claim(SecurityConstants.USER_ID_CLAIM_NAME, userInDB.getId())
                     .claim(SecurityConstants.TOKEN_TYPE_CLAIM_NAME, SecurityConstants.TOKEN_TYPE_ACCESS_CLAIM_VALUE)
                     .setIssuedAt(now)
                     .setExpiration(new Date(now.getTime() + tokenProperties.getAccessTokenLifeTime()))
@@ -68,8 +71,9 @@ public class UserController {
                     .setMessage("access token is refreshed, can be found in header: %s`".formatted(tokenProperties.getAccessTokenHeaderNameGeneratedByServer()))
                     .build();
 
-            return ResponseEntity.status(HttpStatus.OK).header(tokenProperties.getAccessTokenHeaderNameGeneratedByServer(), accessToken).body(token);
-
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header(tokenProperties.getAccessTokenHeaderNameGeneratedByServer(), accessToken)
+                    .body(token);
         } catch (Exception ex) {
             SimpleResponseBody error = new SimpleResponseBody
                     .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
@@ -80,14 +84,23 @@ public class UserController {
     }
 
 
-    @PutMapping(value = "", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
             User savedUser = service.addUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         } catch (ConstraintsViolationException e) {
-            return ResponseEntity.status(HttpStatus.IM_USED).body(e.getErrors());
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getErrors());
         }
+    }
+
+    private ResponseEntity<Object> unauthorizedResponse(String message) {
+        SimpleResponseBody simpleResponseBody = new SimpleResponseBody
+                .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .setMessage(message)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(simpleResponseBody);
     }
 
     private Cookie getAccessTokenCookie(Cookie[] cookies) {

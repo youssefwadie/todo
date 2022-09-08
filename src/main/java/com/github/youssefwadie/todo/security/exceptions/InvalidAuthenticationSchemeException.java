@@ -5,8 +5,8 @@ import java.io.Serial;
 public class InvalidAuthenticationSchemeException extends Exception {
     @Serial
     private static final long serialVersionUID = 5086046763662803426L;
-    
-    
+
+
     public InvalidAuthenticationSchemeException() {
         super();
     }

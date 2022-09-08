@@ -15,7 +15,6 @@ public class SimpleResponseBody {
     private final String timestamp;
 
 
-
     private SimpleResponseBody(Builder builder) {
         this.status = builder.status;
         this.description = builder.description;

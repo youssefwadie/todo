@@ -1,12 +1,17 @@
 package com.github.youssefwadie.todo.config;
 
 
+import com.github.youssefwadie.todo.dao.todo.TodoItemRowMapper;
+import com.github.youssefwadie.todo.dao.user.UserRowMapper;
+import com.github.youssefwadie.todo.model.TodoItem;
+import com.github.youssefwadie.todo.model.User;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jdbc.repository.QueryMappingConfiguration;
+import org.springframework.data.jdbc.repository.config.DefaultQueryMappingConfiguration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 

@@ -97,10 +97,10 @@ public class TodoItemDaoImpl implements TodoItemDao {
     public Optional<TodoItem> findById(Long id) {
         Assert.notNull(id, "Id must not be null!");
         TodoItem todoItem = jdbcTemplate.queryForObject(QUERY_FIND_BY_ID_TEMPLATE, rowMapper, id);
-        if (todoItem  == null) {
+        if (todoItem == null) {
             return Optional.empty();
         }
-        return Optional.of(todoItem );
+        return Optional.of(todoItem);
     }
 
     @Override

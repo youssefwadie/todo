@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Repository
 public interface UserDao {
     /**
      * Saves a given user. Use the returned instance for further operations as the save operation might have changed the

@@ -178,6 +178,7 @@ public interface TodoItemDao {
 
     /**
      * Sets the todoItem status, done or not
+     *
      * @param done todoStatus
      */
     void setDone(Long id, boolean done);
