@@ -14,10 +14,8 @@ import com.github.youssefwadie.todo.security.util.JwtUtils;
 import com.github.youssefwadie.todo.services.UserService;
 import com.github.youssefwadie.todo.util.SimpleResponseBody;
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +28,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/users")
-@AllArgsConstructor
 public class UserController {
     private final UserService service;
     private final TokenProperties tokenProperties;
