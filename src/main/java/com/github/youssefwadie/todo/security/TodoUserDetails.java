@@ -1,11 +1,15 @@
 package com.github.youssefwadie.todo.security;
 
+import com.github.youssefwadie.todo.model.Role;
 import com.github.youssefwadie.todo.model.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class TodoUserDetails implements UserDetails {
 
@@ -23,7 +27,11 @@ public class TodoUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;
     }
 
     @Override

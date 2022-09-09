@@ -1,9 +1,9 @@
 package com.github.youssefwadie.todo.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
+import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.security.util.JwtUtils;
 import com.github.youssefwadie.todo.security.util.JwtUtils.TOKEN_TYPE;
 import com.github.youssefwadie.todo.util.SimpleResponseBody;
@@ -68,10 +68,9 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(tokenProperties.getAccessTokenHeaderNameSentByClient());
         String requestPath = request.getServletPath();
-        System.out.println(requestPath);
         if (authorizationHeader != null) {
             return !authorizationHeader.startsWith(tokenProperties.getAuthenticationScheme())
                     || requestPath.equals("/users/refresh");

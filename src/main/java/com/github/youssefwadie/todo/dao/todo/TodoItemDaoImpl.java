@@ -49,9 +49,9 @@ public class TodoItemDaoImpl implements TodoItemDao {
     private final JdbcTemplate jdbcTemplate;
     private final TodoItemRowMapper rowMapper;
 
-    public TodoItemDaoImpl(JdbcTemplate jdbcTemplate, TodoItemRowMapper rowMapper) {
+    public TodoItemDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.rowMapper = rowMapper;
+        this.rowMapper = new TodoItemRowMapper();
     }
 
 
@@ -117,6 +117,7 @@ public class TodoItemDaoImpl implements TodoItemDao {
 
     @Override
     public Iterable<TodoItem> findAllById(Iterable<? extends Long> ids) {
+        Assert.notNull(ids, "IDs must not be null");
         List<TodoItem> todoItems = new ArrayList<>();
         ids.forEach(id -> findById(id).ifPresent(todoItems::add));
         return todoItems;

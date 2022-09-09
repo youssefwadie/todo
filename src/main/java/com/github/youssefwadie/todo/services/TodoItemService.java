@@ -19,7 +19,7 @@ public class TodoItemService {
         this.userService = userService;
     }
 
-    public List<TodoItem> findAll(Long userId) {
+    public List<TodoItem> findAllByUserId(Long userId) {
         return (List<TodoItem>) todoItemDao.findAllByUserId(userId);
     }
 

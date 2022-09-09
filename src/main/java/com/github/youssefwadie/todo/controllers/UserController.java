@@ -3,23 +3,32 @@ package com.github.youssefwadie.todo.controllers;
 
 import com.github.youssefwadie.todo.constants.SecurityConstants;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
+import com.github.youssefwadie.todo.exceptions.InvalidPasswordException;
+import com.github.youssefwadie.todo.exceptions.UserNotFoundException;
+import com.github.youssefwadie.todo.model.ChangePasswordCommand;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.security.TokenProperties;
+import com.github.youssefwadie.todo.security.util.BasicValidator;
 import com.github.youssefwadie.todo.security.util.JwtUtils;
 import com.github.youssefwadie.todo.services.UserService;
 import com.github.youssefwadie.todo.util.SimpleResponseBody;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -37,7 +46,7 @@ public class UserController {
 
 
     @GetMapping(value = "/refresh")
-    public ResponseEntity<Object> refreshToken(HttpServletRequest request) {
+    public ResponseEntity<Object> refreshToken(HttpServletRequest request, HttpServletResponse response) {
 
         Cookie refreshTokenCookie = getAccessTokenCookie(request.getCookies());
 
@@ -51,7 +60,16 @@ public class UserController {
             LocalDateTime issueAt = jwtUtils.getIssueAt(jwt);
             User parsedUser = jwtUtils.parseUser(jwt, JwtUtils.TOKEN_TYPE.REFRESH);
             User userInDB = service.findById(parsedUser.getId());
-            if (userInDB.getUpdatedAt().isAfter(issueAt)) {
+            if (userInDB.getUpdatedAt() != null && userInDB.getUpdatedAt().isAfter(issueAt)) {
+
+                Cookie cookie = new Cookie(refreshTokenCookie.getName(), null);
+                cookie.setPath("/api/v1/users");
+                cookie.setMaxAge(0);
+                cookie.setHttpOnly(true);
+                cookie.setSecure(true);
+                response.addCookie(cookie);
+
+                SecurityContextHolder.getContext().setAuthentication(null);
                 return unauthorizedResponse("user details has been changed, please re-login.");
             }
 
@@ -83,6 +101,33 @@ public class UserController {
         }
     }
 
+    @PutMapping(value = "/change-password", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordCommand changePasswordCommand) throws UserNotFoundException {
+
+        Map<String, String> errors = new HashMap<>();
+        String oldPassword = changePasswordCommand.getOldPassword();
+        String newPassword = changePasswordCommand.getNewPassword();
+
+        if (BasicValidator.isBlank(oldPassword)) errors.put("oldPassword", "cannot be empty");
+        if (BasicValidator.isBlank(newPassword)) errors.put("newPassword", "cannot be empty");
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+        try {
+            service.changePassword(oldPassword, newPassword);
+        } catch (InvalidPasswordException ex) {
+            InvalidPasswordException.PASSWORD_TYPE passwordType = ex.getPasswordType();
+            if (passwordType.equals(InvalidPasswordException.PASSWORD_TYPE.OLD)) {
+                errors.put("oldPassword", ex.getMessage());
+            } else if (passwordType.equals(InvalidPasswordException.PASSWORD_TYPE.NEW)) {
+                errors.put("newPassword", ex.getMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping(value = "", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createUser(@RequestBody User user) {

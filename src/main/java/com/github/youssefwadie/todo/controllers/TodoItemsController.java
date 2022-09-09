@@ -29,7 +29,7 @@ public class TodoItemsController {
     @GetMapping(value = "", produces = "application/json")
     public ResponseEntity<List<TodoItem>> list() {
         User loggedUser = getLoggedUser();
-        return ResponseEntity.ok(todoItemService.findAll(loggedUser.getId()));
+        return ResponseEntity.ok(todoItemService.findAllByUserId(loggedUser.getId()));
     }
 
 

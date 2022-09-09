@@ -5,6 +5,7 @@ import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -127,4 +128,57 @@ public interface RoleDao {
     @Transactional
     @Modifying
     void deleteAll();
+
+    /**
+     * Returns all {@link Role roles} with the given user id.
+     *
+     * @param id must not be {@literal null}.
+     * @return guaranteed to be not {@literal null} list of roles for the user's given {@literal id}.
+     * @throws IllegalArgumentException in case the given {@link Long id} is null.
+     */
+    @Transactional(readOnly = true)
+    List<Role> findAllByUserId(Long id);
+
+    /**
+     * Saves all given roles for the give user's id.
+     *
+     * @param roles  must not be {@literal null} nor must it contain {@literal null}.
+     * @param userId must not be {@literal null}.
+     * @throws IllegalArgumentException in case the given {@link Iterable roles} or one of its roles is {@literal null}
+     *                                  or the userId is {@literal null}.
+     */
+    @Transactional
+    @Modifying
+    void saveAllForUser(List<Role> roles, Long userId);
+
+    /**
+     * Returns whether role with the given id exists.
+     *
+     * @param id must not be {@literal null}.
+     * @return {@literal true} if a role with the given id exists, {@literal false} otherwise.
+     * @throws IllegalArgumentException if {@literal id} is {@literal null}.
+     */
+    @Transactional(readOnly = true)
+    boolean existsById(Long id);
+
+    /**
+     * Deletes the roles for the given user id.
+     *
+     * @param rolesIDs must not be {@literal null}.
+     * @param userId must not be null.
+     * @throws IllegalArgumentException in case the given {@literal rolesIDs} is {@literal null}, or contain null value(s)
+     * or {@literal userId} is @{literal null}
+     */
+    @Transactional
+    @Modifying
+    void deleteUsersRolesById(List<Long> rolesIDs, Long userId);
+
+    /**
+     *
+      * @param userId must not be null.
+     *  @throws IllegalArgumentException in case the given {@literal userId} is {@literal null}
+     */
+    @Transactional
+    @Modifying
+    void deleteAllUsersRolesById(Long userId);
 }

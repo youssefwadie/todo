@@ -41,7 +41,10 @@ public class UserServiceTests {
         Long userId = 1L;
         String email = "youssefwadie2@gmail.com";
         String password = "";
-        User user = new User(userId, email, password, null, null);
+        User user = new User();
+        user.setId(userId);
+        user.setEmail(email);
+        user.setPassword(password);
 
         Mockito.doAnswer(invocation -> {
             Long passedUserId = invocation.getArgument(0);
@@ -49,14 +52,14 @@ public class UserServiceTests {
             assertThat(passedUserId).isEqualTo(userId);
             return null;
         }).when(todoDao).deleteAllByUserId(user.getId());
-        
+
         Mockito.doAnswer(invocation -> {
-        	User passedUser = invocation.getArgument(0);
-        	System.out.printf("Deleting user ... %d - with email %s%n", passedUser.getId(), passedUser.getEmail());
-        	assertThat(passedUser.getId()).isEqualTo(userId);
-        	return null;
+            User passedUser = invocation.getArgument(0);
+            System.out.printf("Deleting user ... %d - with email %s%n", passedUser.getId(), passedUser.getEmail());
+            assertThat(passedUser.getId()).isEqualTo(userId);
+            return null;
         }).when(userDao).delete(user);
-        
+
         userService.deleteUser(user);
         Mockito.verify(todoDao, Mockito.times(1)).deleteAllByUserId(userId);
         Mockito.verify(userDao, Mockito.times(1)).delete(user);
@@ -64,25 +67,26 @@ public class UserServiceTests {
 
     @Test
     void testFindUserByIdThrowsException() throws UserNotFoundException {
-    	Long userId = 84568L;
-    	Optional<User> userOptional = Optional.empty();
-    	Mockito.when(userDao.findById(userId)).thenReturn(userOptional);
-    	
-    	assertThrows(UserNotFoundException.class, ()-> {
-    		userService.findById(userId);
-    	});
-    
+        Long userId = 84568L;
+        Optional<User> userOptional = Optional.empty();
+        Mockito.when(userDao.findById(userId)).thenReturn(userOptional);
+
+        assertThrows(UserNotFoundException.class, () -> {
+            userService.findById(userId);
+        });
+
     }
-    
-    
+
+
     @Test
     void testFindUserById() throws UserNotFoundException {
-    	Long userId = 1L;
-    	User user = new User(userId, "", "", null, null);
-    	Optional<User> userOptional = Optional.of(user);
-    	Mockito.when(userDao.findById(userId)).thenReturn(userOptional);
-    	User retrievedUser = userService.findById(userId);
-    	System.out.println(retrievedUser);
-    	assertThat(retrievedUser.getId()).isEqualTo(user.getId());
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+        Optional<User> userOptional = Optional.of(user);
+        Mockito.when(userDao.findById(userId)).thenReturn(userOptional);
+        User retrievedUser = userService.findById(userId);
+        System.out.println(retrievedUser);
+        assertThat(retrievedUser.getId()).isEqualTo(user.getId());
     }
 }

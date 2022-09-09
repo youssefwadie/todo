@@ -3,9 +3,9 @@ package com.github.youssefwadie.todo.security.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.constants.SecurityConstants;
 import com.github.youssefwadie.todo.model.User;
+import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.security.exceptions.InvalidAuthenticationSchemeException;
 import com.github.youssefwadie.todo.security.exceptions.InvalidJwtTokenTypeException;
 import io.jsonwebtoken.Claims;
@@ -73,7 +73,11 @@ public class JwtUtils {
             }
             Long id = claims.get(SecurityConstants.USER_ID_CLAIM_NAME, Long.class);
             String email = claims.getSubject();
-            return new User(id, email, "", null, null);
+            User user = new User();
+            user.setId(id);
+            user.setEmail(email);
+
+            return user;
         } catch (IllegalArgumentException ex) {
             throw new InvalidJwtTokenTypeException("Expected token type to be one of %s, found: %s"
                     .formatted(Arrays.toString(TOKEN_TYPE.values()), tokenTypeClaim));

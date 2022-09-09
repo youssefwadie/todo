@@ -1,7 +1,7 @@
 package com.github.youssefwadie.todo.security.filters;
 
-import com.github.youssefwadie.todo.security.TokenProperties;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
+import com.github.youssefwadie.todo.security.TokenProperties;
 import io.jsonwebtoken.Jwts;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpHeaders;
@@ -72,7 +72,7 @@ public class JWTGeneratorFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         return !request.getServletPath().equals("/users/login");
     }
 }

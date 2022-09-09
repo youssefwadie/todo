@@ -1,5 +1,6 @@
 package com.github.youssefwadie.todo.dao.user;
 
+import com.github.youssefwadie.todo.dao.role.RoleDao;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.util.BasicValidator;
 import org.springframework.data.util.Streamable;
@@ -38,23 +39,24 @@ public class UserDaoImpl implements UserDao {
 
     public static final String DELETE_ALL = "DELETE FROM users";
 
+    private final RoleDao roleDao;
     private final JdbcTemplate jdbcTemplate;
     private final UserRowMapper rowMapper;
 
-    public UserDaoImpl(JdbcTemplate jdbcTemplate, UserRowMapper rowMapper) {
+    public UserDaoImpl(JdbcTemplate jdbcTemplate, RoleDao roleDao) {
         this.jdbcTemplate = jdbcTemplate;
-        this.rowMapper = rowMapper;
+        this.roleDao = roleDao;
+        this.rowMapper = new UserRowMapper();
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
         Assert.notNull(email, "Email must not be null!");
         User user = jdbcTemplate.queryForObject(QUERY_FIND_BY_EMAIL_TEMPLATE, rowMapper, email);
-        if (user == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(user);
-        }
+        if (user == null) return Optional.empty();
+
+        user.setRoles(roleDao.findAllByUserId(user.getId()));
+        return Optional.of(user);
     }
 
 
@@ -75,6 +77,7 @@ public class UserDaoImpl implements UserDao {
             return Optional.empty();
         }
 
+        user.setRoles(roleDao.findAllByUserId(id));
         return Optional.of(user);
     }
 
@@ -91,6 +94,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Iterable<User> findAllById(Iterable<Long> ids) {
+        Assert.notNull(ids, "IDs must not be null");
         List<User> users = new LinkedList<>();
         ids.forEach(id -> findById(id).ifPresent(users::add));
         return users;
@@ -105,6 +109,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void deleteById(Long id) {
         Assert.notNull(id, "Id must not be null!");
+        roleDao.deleteAllUsersRolesById(id);
         jdbcTemplate.update(DELETE_BY_ID_TEMPLATE, id);
     }
 
@@ -120,7 +125,7 @@ public class UserDaoImpl implements UserDao {
             return;
         }
 
-        throw new IllegalArgumentException("Either user's email or id's must not be null");
+        throw new IllegalArgumentException("Either user's email or id must not be null");
     }
 
     @Override
@@ -157,7 +162,6 @@ public class UserDaoImpl implements UserDao {
 
         final KeyHolder keyHolder = new GeneratedKeyHolder();
         if (user.getId() != null && existsById(user.getId())) {
-            System.out.println("updating...");
             jdbcTemplate.update(con -> {
                 PreparedStatement preparedStatement = con.prepareStatement(UPDATE_USER_TEMPLATE, Statement.RETURN_GENERATED_KEYS);
                 preparedStatement.setString(1, user.getEmail());
@@ -167,7 +171,6 @@ public class UserDaoImpl implements UserDao {
                 return preparedStatement;
             });
         } else {
-            System.out.println("saving...");
             jdbcTemplate.update(con -> {
                 PreparedStatement preparedStatement = con.prepareStatement(INSERT_NEW_USER_TEMPLATE, Statement.RETURN_GENERATED_KEYS);
                 preparedStatement.setString(1, user.getEmail());
@@ -179,7 +182,7 @@ public class UserDaoImpl implements UserDao {
 
         }
         Long updatedUserId = keyHolder.getKey() != null ? keyHolder.getKey().longValue() : user.getId();
-        System.out.println("key = " + updatedUserId);
+        roleDao.saveAllForUser(user.getRoles(), updatedUserId);
         return findById(updatedUserId).orElseThrow(() -> new IncorrectResultSetColumnCountException(1, 0));
     }
 }

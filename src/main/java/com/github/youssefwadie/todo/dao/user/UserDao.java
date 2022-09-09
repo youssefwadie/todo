@@ -2,7 +2,6 @@ package com.github.youssefwadie.todo.dao.user;
 
 import com.github.youssefwadie.todo.model.User;
 import org.springframework.data.jdbc.repository.query.Modifying;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;

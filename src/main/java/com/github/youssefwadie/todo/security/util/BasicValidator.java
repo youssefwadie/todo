@@ -22,10 +22,12 @@ public final class BasicValidator {
         return emailValidator.isValid(email);
     }
 
-    public static boolean stringsSizeNotBetween(String password, int min, int max) {
-        if (password == null) return true;
-        int length = password.length();
+    public static boolean stringsSizeNotBetween(String str, int min, int max) {
+        if (str == null) return true;
+        int length = str.length();
         return (length < min || length > max);
     }
-
+    public static boolean stringsSizeBetween(String str, int min, int max) {
+        return !stringsSizeNotBetween(str, min, max);
+    }
 }

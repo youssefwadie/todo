@@ -3,10 +3,13 @@ package com.github.youssefwadie.todo.services;
 import com.github.youssefwadie.todo.dao.todo.TodoItemDao;
 import com.github.youssefwadie.todo.dao.user.UserDao;
 import com.github.youssefwadie.todo.exceptions.ConstraintsViolationException;
+import com.github.youssefwadie.todo.exceptions.InvalidPasswordException;
 import com.github.youssefwadie.todo.exceptions.UserNotFoundException;
 import com.github.youssefwadie.todo.model.User;
+import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.security.util.BasicValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,9 @@ import java.util.Map;
 @Service
 @AllArgsConstructor
 public class UserService {
+    private final static int MIN_PASSWORD_LENGTH = 8;
+    private final static int MAX_PASSWORD_LENGTH = 64;
+
     private final UserDao userDao;
     private final TodoItemDao todoDao;
 
@@ -60,8 +66,8 @@ public class UserService {
             }
         }
 
-        if (BasicValidator.isBlank(user.getPassword()) || BasicValidator.stringsSizeNotBetween(user.getPassword(), 8, 64)) {
-            errors.put("password", "cannot be blank, min size = 8, max size = 64");
+        if (!validatePassword(user.getPassword())) {
+            errors.put("password", String.format("cannot be blank, min size = %d, max size = %d", MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH));
         }
 
         // new user
@@ -71,6 +77,34 @@ public class UserService {
         if (!errors.isEmpty()) {
             throw new ConstraintsViolationException(errors);
         }
+    }
+
+    private boolean validatePassword(String password) {
+        return (!BasicValidator.isBlank(password) && BasicValidator.stringsSizeBetween(password, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH));
+    }
+
+    public void changePassword(String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException {
+        TodoUserDetails loggedInPrincipal = (TodoUserDetails)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User loggedInUser = loggedInPrincipal.getUser();
+        User databaseUser = findById(loggedInUser.getId());
+        if (!passwordEncoder.matches(oldPassword, databaseUser.getPassword())) {
+            throw new InvalidPasswordException(InvalidPasswordException.PASSWORD_TYPE.OLD, "old password doesn't match the stored password");
+        }
+        boolean validPassword = validatePassword(newPassword);
+        if (!validPassword) {
+            throw new InvalidPasswordException(
+                    InvalidPasswordException.PASSWORD_TYPE.NEW,
+                    String.format("cannot be blank, min size = %d, max size = %d", MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH));
+        }
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        databaseUser.setPassword(encodedPassword);
+        save(databaseUser);
+    }
+
+    public User save(User user) {
+        return userDao.save(user);
     }
 
     public User findByEmail(String email) throws UserNotFoundException {

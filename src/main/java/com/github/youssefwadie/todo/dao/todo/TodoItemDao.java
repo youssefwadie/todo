@@ -1,12 +1,11 @@
 package com.github.youssefwadie.todo.dao.todo;
 
-import java.util.Optional;
-
+import com.github.youssefwadie.todo.model.TodoItem;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.youssefwadie.todo.model.TodoItem;
+import java.util.Optional;
 
 @Repository
 public interface TodoItemDao {
