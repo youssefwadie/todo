@@ -58,12 +58,16 @@ public class TodoItemsController {
         return ResponseEntity.ok(optionalTodoItem.get());
     }
 
-    @PutMapping("/id:\\d+")
+    @PutMapping("")
     public ResponseEntity<?> updateTodoItem(@RequestBody TodoItem todoItem) throws ConstraintsViolationException {
         User loggedUser = getLoggedUser();
+        if(todoItem.getId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
         if (todoItemService.notOwnedByUser(todoItem.getId(), loggedUser.getId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+        todoItem.setUserId(loggedUser.getId());
         return ResponseEntity.ok(todoItemService.update(todoItem));
     }
 

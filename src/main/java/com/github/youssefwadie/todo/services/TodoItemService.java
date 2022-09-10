@@ -29,7 +29,8 @@ public class TodoItemService {
     }
 
     public TodoItem update(TodoItem todoItem) throws ConstraintsViolationException {
-        validateTodo(todoItem, false, true);
+
+        validateTodo(todoItem, false, false);
         return todoItemDao.save(todoItem);
     }
 

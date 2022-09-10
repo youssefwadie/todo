@@ -1,7 +1,11 @@
 <div class="container">
-
+  <div class="rounded m-2 p-1">
+    <button class="btn btn-outline-primary" (click)="addTodo()">
+      <fa-icon [icon]="faPlus"></fa-icon>
+    </button>
+  </div>
   <ul class="list-group">
-    <li *ngFor="let todoItem of todoList$ | async" class="list-group-item rounded p-4 ms-2 me-2 mb-2">
+    <li *ngFor="let todoItem of todoList" class="list-group-item rounded p-4 ms-2 me-2 mb-2">
       <app-todo-detail [todoItem]="todoItem"></app-todo-detail>
     </li>
   </ul>

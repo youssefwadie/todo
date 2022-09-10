@@ -2,10 +2,12 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from "./components/login/login.component";
 import {TodoListComponent} from "./components/todo-list/todo-list.component";
+import {AuthRouteGuardService} from "./services/auth-route-guard.service";
+import {LoginRouteGuardService} from "./services/login-route-guard.service";
 
 const routes: Routes = [
-    {path: 'login', component: LoginComponent},
-    {path: 'list', component: TodoListComponent}
+  {path: 'login', canActivate: [LoginRouteGuardService], component: LoginComponent},
+  {path: '', canActivate: [AuthRouteGuardService], component: TodoListComponent}
 ];
 
 @NgModule({

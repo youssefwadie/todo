@@ -6,7 +6,7 @@ export class TodoItem {
   done = false;
 
 
-  constructor(id: number | undefined, title: string | undefined, description: string | undefined, deadTime: Date | undefined) {
+  constructor(id?: number, title?: string, description?: string, deadTime?: Date, done?: boolean) {
     if (id) {
       this.id = id;
     }
@@ -18,6 +18,9 @@ export class TodoItem {
     }
     if (deadTime) {
       this.deadTime = deadTime;
+    }
+    if (done) {
+      this.done = done;
     }
   }
 }

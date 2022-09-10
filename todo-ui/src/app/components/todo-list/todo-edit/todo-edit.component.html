@@ -1,6 +1,7 @@
 <form class="p-3" #taskForm="ngForm" (submit)="onSubmit()">
     <div class="modal-header">
-        <h4 class="modal-title">Editing</h4>
+        <h4 *ngIf="formTodoItem.id != null" class="modal-title">Editing</h4>
+        <h4 *ngIf="formTodoItem.id == null" class="modal-title">New</h4>
         <button type="button" class="btn-close" aria-label="Close"
                 (click)="activeModal.dismiss('Cross click')"></button>
     </div>

@@ -9,8 +9,8 @@ import {FormsModule} from '@angular/forms';
 import {TodoDetailComponent} from './components/todo-list/todo-detail/todo-detail.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import { TodoEditComponent } from './components/todo-list/todo-edit/todo-edit.component';
-import { TodoListComponent } from './components/todo-list/todo-list.component';
+import {TodoEditComponent} from './components/todo-list/todo-edit/todo-edit.component';
+import {TodoListComponent} from './components/todo-list/todo-list.component';
 import {AuthInterceptor} from "./interceptors/auth-interceptor.service";
 
 @NgModule({

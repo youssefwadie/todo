@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `todo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-USE `todo`;
+CREATE DATABASE  IF NOT EXISTS `tododb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+USE `tododb`;
 -- MariaDB dump 10.19  Distrib 10.8.3-MariaDB, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: todo
+-- Host: 127.0.0.1    Database: tododb
 -- ------------------------------------------------------
 -- Server version	10.8.3-MariaDB
 
@@ -18,21 +18,21 @@ USE `todo`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `todos`
+-- Table structure for table `todo_items`
 --
 
-DROP TABLE IF EXISTS `todos`;
+DROP TABLE IF EXISTS `todo_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `todos` (
+CREATE TABLE `todo_items` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dead_time` datetime(6) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_todos_user_idx` (`user_id`),
-  CONSTRAINT `fk_todos_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_todo_items_user_idx` (`user_id`),
+  CONSTRAINT `fk_todo_items_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

@@ -1,13 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
-import {TodoListService} from './todo-list.service';
+import {AuthRouteGuardService} from './auth-route-guard.service';
 
-describe('TodoListService', () => {
-  let service: TodoListService;
+describe('AuthGuardService', () => {
+  let service: AuthRouteGuardService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(TodoListService);
+    service = TestBed.inject(AuthRouteGuardService);
   });
 
   it('should be created', () => {

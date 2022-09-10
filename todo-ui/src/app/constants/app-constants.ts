@@ -1,4 +1,5 @@
 export abstract class AppConstants {
+
   public static get LOCALES_ARGUMENT(): Intl.LocalesArgument {
     return 'en-US'
   };
@@ -28,8 +29,16 @@ export abstract class AppConstants {
     return 'todo/';
   }
 
+  public static get API_ADD_TODO() {
+    return "todo/";
+  }
+
   // A bit weird naming style but ...!
   public static API_UPDATE_TODO_STATUS_PATH(id: number, status: boolean): string {
     return `todo/${id}/${status}`;
+  }
+
+  public static get API_REFRESH_TOKEN() {
+    return 'users/refresh';
   }
 }

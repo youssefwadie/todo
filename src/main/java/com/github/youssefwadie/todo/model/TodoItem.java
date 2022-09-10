@@ -1,12 +1,11 @@
 package com.github.youssefwadie.todo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +17,8 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @AllArgsConstructor
+@JsonIgnoreProperties(value = { "userId" })
 public class TodoItem {
-    @JsonProperty(access = Access.READ_ONLY)
     private Long id;
     private String title;
     private String description;
@@ -31,7 +30,6 @@ public class TodoItem {
     private LocalDateTime deadTime;
     private Boolean done;
 
-    @JsonProperty(access = Access.READ_ONLY)
     private Long userId;
 
 }

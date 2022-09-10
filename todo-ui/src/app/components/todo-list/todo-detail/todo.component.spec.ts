@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { TodoDetailComponent } from './todo-detail.component';
+import {TodoDetailComponent} from './todo-detail.component';
 
 describe('TodoComponent', () => {
   let component: TodoDetailComponent;

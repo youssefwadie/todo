@@ -1,102 +1,106 @@
 import {Injectable} from '@angular/core';
-import {User} from "../model/User";
-import {HttpClient, HttpResponse} from "@angular/common/http";
-import {environment} from "../../environments/environment";
-import {EMPTY, Observable, tap} from "rxjs";
-import {AppConstants} from "../constants/app-constants";
-import * as moment from "moment/moment";
-import {Moment} from "moment/moment";
-import {Router} from "@angular/router";
+import {User} from '../model/User';
+import {HttpClient, HttpEvent, HttpResponse} from '@angular/common/http';
+import {environment} from '../../environments/environment';
+import {catchError, map, Observable, of, tap} from 'rxjs';
+import {AppConstants} from '../constants/app-constants';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  public currentUser: User | null;
+  public accessToken: string;
 
-    public currentUser: User;
+  constructor(private http: HttpClient) {
+  }
 
-    constructor(private http: HttpClient, private router: Router) {
-    }
-
-    login(user: User): Observable<any> {
-        return this.http
-            .post<User>(environment.rootURL + AppConstants.API_ACCOUNT_LOGIN_PATH, user, {
-                observe: 'response',
-                withCredentials: true,
-                headers: {
-                    'Authorization': 'Basic ' + btoa(user.email + ':' + user.password)
-                }
-            })
-            .pipe(tap(res => this.setSession(res)));
-    }
-
-    public isLoggedIn() {
-        const userLoggedIn = moment().isBefore(this.getExpiration());
-        if (userLoggedIn) {
-            if (this.currentUser != null) {
-                return true;
-            }
-
-            const accessToken = localStorage.getItem('access_token');
-            if (accessToken) {
-                const parsedUser = this.parseUser(accessToken);
-                if (parsedUser) {
-                    this.currentUser = parsedUser;
-                }
-                return true;
-            }
+  public login(user: User): Observable<any> {
+    return this.http
+      .post<User>(
+        environment.rootURL + AppConstants.API_ACCOUNT_LOGIN_PATH,
+        user,
+        {
+          observe: 'response',
+          withCredentials: true,
+          headers: {
+            Authorization:
+              'Basic ' + window.btoa(user.email + ':' + user.password),
+          },
         }
-        return false;
+      )
+      .pipe(
+        tap((res) => {
+          this.setSession(res);
+        })
+      );
+  }
+
+  public isAuthenticated(): Observable<boolean> {
+    if (this.parseUser(this.accessToken)) {
+      return of(true);
     }
 
-    public logout(): void {
-        localStorage.removeItem('access_token');
+    return this.refreshToken().pipe(map(res => {
+      return this.setSession(res)
+    })).pipe(catchError(err => {
+      return of(false);
+    }));
+  }
+
+
+  public logout(): void {
+
+  }
+
+  public setSession(authResult: HttpResponse<any>): boolean {
+    console.log('refreshing token..');
+    const tokenHeader = authResult.headers.get('X-Access-Token');
+
+    if (!tokenHeader) return false;
+    this.accessToken = tokenHeader;
+    const jwt = this.extractJWTBody(tokenHeader);
+    if (!jwt) return false;
+
+    const parsedUser = this.parseUser(jwt);
+    if (parsedUser) {
+      this.currentUser = parsedUser;
     }
+    return true;
+  }
 
-    private setSession(authResult: HttpResponse<any>) {
-        const jwt = this.parseJwt(authResult.body.access_token);
-        if (jwt) {
-            const {exp} = jwt;
-            localStorage.setItem('access_token', authResult.body.access_token);
-            localStorage.setItem('expires_at', JSON.stringify(exp * 1000));
-            const parsedUser = this.parseUser(jwt);
-            if (parsedUser) {
-                this.currentUser = parsedUser;
-            }
-        }
+  private parseUser(token: string): User | null {
+    const jwtBody = this.extractJWTBody(token);
+    if (!jwtBody) return null;
+    const {sub, exp} = jwtBody;
+    const isExpired = this.isExpired(new Date(exp * 1000));
+    if (isExpired) {
+      return null;
     }
+    const user = new User();
+    user.email = sub;
+    return user;
+  }
 
-    private parseUser(token: string): User | null {
-        const jwt = this.parseJwt(token);
-        if (jwt) {
-            const user = new User();
-            const {sub} = jwt;
-            user.email = sub;
-            return user;
-        }
-        return null;
+  private extractJWTBody(token: string): any | null {
+    try {
+      return JSON.parse(window.atob(token.split('.')[1]));
+    } catch (e) {
+      return null;
     }
+  }
 
-    private parseJwt(token: string): any | null {
-        try {
-            return JSON.parse(atob(token.split('.')[1]));
-        } catch (e) {
-            return null;
-        }
-    }
+  public refreshToken(): Observable<HttpResponse<unknown>> {
+    return this.http.get<HttpEvent<unknown>>(
+      environment.rootURL + AppConstants.API_REFRESH_TOKEN,
+      {
+        observe: 'response',
+        withCredentials: true,
+      }
+    );
+  }
 
-
-    private getExpiration(): Moment {
-        const expiration = localStorage.getItem("expires_at");
-        if (expiration) {
-            const expiresAt = JSON.parse(expiration);
-            if (expiresAt) {
-                return moment(expiresAt);
-            }
-        }
-
-        return moment().subtract(1, 'days');
-    }
-
-
+  private isExpired(expirationDate: Date): boolean {
+    return new Date() >= expirationDate;
+  }
 }
