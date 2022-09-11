@@ -1,5 +1,6 @@
 package com.github.youssefwadie.todo.security.filters;
 
+import com.github.youssefwadie.todo.security.JwtService;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.security.TokenProperties;
 import io.jsonwebtoken.Jwts;
@@ -16,15 +17,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
-import static com.github.youssefwadie.todo.constants.SecurityConstants.*;
+import static com.github.youssefwadie.todo.security.SecurityConstants.*;
 
 public class JWTGeneratorFilter extends OncePerRequestFilter {
 
     private final TokenProperties tokenProperties;
+    private final JwtService jwtService;
 
-    public JWTGeneratorFilter(TokenProperties tokenProperties) {
+    public JWTGeneratorFilter(TokenProperties tokenProperties, JwtService jwtService) {
         this.tokenProperties = tokenProperties;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -35,15 +39,9 @@ public class JWTGeneratorFilter extends OncePerRequestFilter {
         if (authentication != null) {
             TodoUserDetails userDetails = (TodoUserDetails) (authentication.getPrincipal());
             Date now = new Date();
-            String accessToken = Jwts.builder()
-                    .setIssuer("Todo")
-                    .setSubject(userDetails.getUsername())
-                    .claim(USER_ID_CLAIM_NAME, userDetails.getUser().getId())
-                    .claim(TOKEN_TYPE_CLAIM_NAME, TOKEN_TYPE_ACCESS_CLAIM_VALUE)
-                    .setIssuedAt(now)
-                    .setExpiration(new Date(now.getTime() + tokenProperties.getAccessTokenLifeTime()))
-                    .signWith(tokenProperties.getSecretKey())
-                    .compact();
+
+            List<String> userSimpleAuthorities = jwtService.getSimpleUserAuthorities(userDetails.getUser().getRoles());
+            String accessToken = jwtService.generatedAccessToken(userDetails.getUser().getId(), userDetails.getUsername(), userSimpleAuthorities);
 
             Date refreshTokenExpirationDate = new Date(now.getTime() + tokenProperties.getRefreshTokenLifeTime());
             String refreshToken = Jwts.builder()

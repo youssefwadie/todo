@@ -2,10 +2,10 @@ package com.github.youssefwadie.todo.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.youssefwadie.todo.model.User;
+import com.github.youssefwadie.todo.security.JwtService;
+import com.github.youssefwadie.todo.security.JwtService.TOKEN_TYPE;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.security.TokenProperties;
-import com.github.youssefwadie.todo.security.util.JwtUtils;
-import com.github.youssefwadie.todo.security.util.JwtUtils.TOKEN_TYPE;
 import com.github.youssefwadie.todo.util.SimpleResponseBody;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,11 +28,11 @@ import java.io.OutputStream;
 public class JWTValidatorFilter extends OncePerRequestFilter {
 
     private final TokenProperties tokenProperties;
-    private final JwtUtils jwtUtils;
+    private final JwtService jwtService;
 
-    public JWTValidatorFilter(TokenProperties tokenProperties, JwtUtils jwtUtils) {
+    public JWTValidatorFilter(TokenProperties tokenProperties, JwtService jwtService) {
         this.tokenProperties = tokenProperties;
-        this.jwtUtils = jwtUtils;
+        this.jwtService = jwtService;
     }
 
 
@@ -42,10 +42,10 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
         String jwt = request.getHeader(tokenProperties.getAccessTokenHeaderNameSentByClient());
         if (jwt != null) {
             try {
-                jwt = jwtUtils.extractAccessToken(jwt);
-                User user = jwtUtils.parseUser(jwt, TOKEN_TYPE.ACCESS);
+                jwt = jwtService.extractAccessToken(jwt);
+                User user = jwtService.parseUser(jwt, TOKEN_TYPE.ACCESS);
                 TodoUserDetails userDetails = new TodoUserDetails(user);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(authentication);
                 SecurityContextHolder.setContext(context);

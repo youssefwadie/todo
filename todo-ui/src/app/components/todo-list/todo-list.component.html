@@ -1,9 +1,28 @@
 <div class="container">
-  <div class="rounded m-2 p-1">
-    <button class="btn btn-outline-primary" (click)="addTodo()">
-      <fa-icon [icon]="faPlus"></fa-icon>
-    </button>
+  <div class="row m-1 p-1">
+    <div class="col">
+      <div class="rounded">
+        <button class="btn btn-outline-primary" (click)="addTodo()">
+          <fa-icon [icon]="faPlus"></fa-icon>
+        </button>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div ngbDropdown class="d-inline-block">
+        <button type="button" class="btn btn-outline-primary" id="optionsDropdown" ngbDropdownToggle>o</button>
+        <div ngbDropdownMenu aria-labelledby="optionsDropdown">
+          <button ngbDropdownItem (click)="changePassword()">Change Password</button>
+          <button ngbDropdownItem (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!--  <div class="rounded m-2 p-1">-->
+  <!--    <button class="btn btn-outline-primary" (click)="addTodo()">-->
+  <!--      <fa-icon [icon]="faPlus"></fa-icon>-->
+  <!--    </button>-->
+  <!--  </div>-->
   <ul class="list-group">
     <li *ngFor="let todoItem of todoList" class="list-group-item rounded p-4 ms-2 me-2 mb-2">
       <app-todo-detail [todoItem]="todoItem"></app-todo-detail>

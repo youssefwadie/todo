@@ -26,14 +26,14 @@ export class TodoEditComponent implements OnInit {
   ngOnInit(): void {
     this.formTodoItem = Object.assign({}, this.todoItem);
 
-    let deadTime = this.formTodoItem.deadTime;
-    if (deadTime) {
-      deadTime = new Date(deadTime);
+    let deadline = this.formTodoItem.deadline;
+    if (deadline) {
+      deadline = new Date(deadline);
     } else {
-      deadTime = new Date();
+      deadline = new Date();
     }
-    this.time = {hour: deadTime.getUTCHours(), minute: deadTime.getUTCMinutes(), second: deadTime.getUTCSeconds()};
-    this.date = {year: deadTime.getFullYear(), month: deadTime.getMonth() + 1, day: deadTime.getUTCDate()}
+    this.time = {hour: deadline.getUTCHours(), minute: deadline.getUTCMinutes(), second: deadline.getUTCSeconds()};
+    this.date = {year: deadline.getFullYear(), month: deadline.getMonth() + 1, day: deadline.getUTCDate()}
 
     this.checkIfTitleIsValid();
   }
@@ -42,7 +42,7 @@ export class TodoEditComponent implements OnInit {
     this.formTodoItem.title = this.formTodoItem.title.trim();
     this.formTodoItem.description = this.formTodoItem.description.trim();
 
-    this.formTodoItem.deadTime = new Date(this.date.year, this.date.month, this.date.day, this.time.hour, this.time.minute, this.time.second);
+    this.formTodoItem.deadline = new Date(this.date.year, this.date.month, this.date.day, this.time.hour, this.time.minute, this.time.second);
     if (this.formTodoItem.id != null) {
       this.todoListService.updateTodo(this.formTodoItem)
         .subscribe({

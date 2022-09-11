@@ -1,8 +1,8 @@
 package com.github.youssefwadie.todo.security;
 
 
-import com.github.youssefwadie.todo.dao.user.UserDao;
 import com.github.youssefwadie.todo.model.User;
+import com.github.youssefwadie.todo.user.dao.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,9 +14,9 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class TodoUserDetailsService implements UserDetailsService {
-    private final UserDao repository;
+    private final UserRepository repository;
 
-    public TodoUserDetailsService(UserDao repository) {
+    public TodoUserDetailsService(UserRepository repository) {
         this.repository = repository;
     }
 

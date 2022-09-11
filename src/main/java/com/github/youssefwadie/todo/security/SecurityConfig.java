@@ -2,8 +2,8 @@ package com.github.youssefwadie.todo.security;
 
 import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
 import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
-import com.github.youssefwadie.todo.security.util.JwtUtils;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +19,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.Collections;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Configuration
 //@EnableWebSecurity(debug = true)
 @EnableConfigurationProperties(TokenProperties.class)
 public class SecurityConfig {
 
     private final TokenProperties tokenProperties;
-    private final JwtUtils jwtUtils;
+    private final JwtService jwtService;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -50,6 +50,7 @@ public class SecurityConfig {
         http.authorizeRequests();
 
         http.authorizeRequests(request -> {
+            request.antMatchers("/admin/**").hasAuthority("Admin");
             request.antMatchers(HttpMethod.GET, "/users/refresh").permitAll();
             request.antMatchers(HttpMethod.POST, "/users").permitAll();
             request.anyRequest().authenticated();
@@ -61,11 +62,11 @@ public class SecurityConfig {
     }
 
     JWTValidatorFilter jwtValidatorFilter() {
-        return new JWTValidatorFilter(tokenProperties, jwtUtils);
+        return new JWTValidatorFilter(tokenProperties, jwtService);
     }
 
     JWTGeneratorFilter jwtGeneratorFilter() {
-        return new JWTGeneratorFilter(tokenProperties);
+        return new JWTGeneratorFilter(tokenProperties, jwtService);
     }
 
     @Bean

@@ -2,11 +2,11 @@ export class TodoItem {
   id: number;
   title: string;
   description: string;
-  deadTime: Date;
+  deadline: Date;
   done = false;
 
 
-  constructor(id?: number, title?: string, description?: string, deadTime?: Date, done?: boolean) {
+  constructor(id?: number, title?: string, description?: string, deadline?: Date, done?: boolean) {
     if (id) {
       this.id = id;
     }
@@ -16,8 +16,8 @@ export class TodoItem {
     if (description) {
       this.description = description;
     }
-    if (deadTime) {
-      this.deadTime = deadTime;
+    if (deadline) {
+      this.deadline = deadline;
     }
     if (done) {
       this.done = done;

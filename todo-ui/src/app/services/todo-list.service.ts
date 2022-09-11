@@ -30,7 +30,7 @@ export class TodoListService {
   }
 
   private fromHttp(item: TodoItem): TodoItem {
-    return new TodoItem(item.id, item.title, item.description, new Date(item.deadTime), item.done);
+    return new TodoItem(item.id, item.title, item.description, new Date(item.deadline), item.done);
   }
 
   public getTodoList(): Observable<TodoItem[]> {

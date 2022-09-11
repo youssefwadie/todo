@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {map, Subscription, tap} from 'rxjs';
 import {TodoItem} from '../../model/TodoItem';
 import {faPlusSquare} from "@fortawesome/free-regular-svg-icons";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TodoEditComponent} from './todo-edit/todo-edit.component';
 import {TodoListService} from '../../services/todo-list.service';
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-todo-list-list',
@@ -23,6 +24,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private todoListService: TodoListService,
+    private authService: AuthService,
     private route: ActivatedRoute,
     private modalService: NgbModal
   ) {
@@ -48,7 +50,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
       } else {
         if (this.action === 'add') {
           this.selectedTodoItem = new TodoItem();
-          this.selectedTodoItem.deadTime = new Date();
+          this.selectedTodoItem.deadline = new Date();
           this.open();
         }
       }
@@ -82,5 +84,18 @@ export class TodoListComponent implements OnInit, OnDestroy {
     //     console.log('dismssed');
     //     this.router.navigate(['list']);
     // });
+  }
+
+  changePassword() {
+
+  }
+
+  logout() {
+    this.authService.logout().subscribe(next => {
+      if (next) {
+        this.router.navigate(['login']);
+      }
+    });
+
   }
 }

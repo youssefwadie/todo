@@ -17,6 +17,10 @@ export abstract class AppConstants {
     return "users/login"
   }
 
+  public static get API_ACCOUNT_LOGOUT_PATH(): string {
+    return "users/logout";
+  }
+
   public static get API_TODO_LIST_PATH() {
     return "todo";
   }

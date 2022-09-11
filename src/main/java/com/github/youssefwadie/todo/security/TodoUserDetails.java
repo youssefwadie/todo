@@ -34,6 +34,10 @@ public class TodoUserDetails implements UserDetails {
         return authorities;
     }
 
+    public List<String> getSimpleAuthorities() {
+        return user.getRoles().stream().map(Role::getName).toList();
+    }
+
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -61,6 +65,6 @@ public class TodoUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEnabled();
     }
 }

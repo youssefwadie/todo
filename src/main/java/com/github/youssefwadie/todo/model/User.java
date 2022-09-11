@@ -30,6 +30,9 @@ public class User {
 
     private List<Role> roles = new ArrayList<>();
 
+    @JsonProperty(access = Access.READ_ONLY)
+    boolean enabled = false;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

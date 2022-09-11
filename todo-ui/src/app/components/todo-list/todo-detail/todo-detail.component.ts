@@ -17,7 +17,7 @@ export class TodoDetailComponent implements OnInit {
 
   shortTitle: string;
   isCollapsed = true;
-  deadTime: string;
+  deadline: string;
 
   faCheckCircle = faCheckCircle;
   faBook = faBook;
@@ -29,7 +29,7 @@ export class TodoDetailComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.todoItem) {
-      this.deadTime = new Date(this.todoItem.deadTime).toLocaleDateString(AppConstants.LOCALES_ARGUMENT, AppConstants.DATE_TIME_FORMAT_OPTIONS);
+      this.deadline = new Date(this.todoItem.deadline).toLocaleDateString(AppConstants.LOCALES_ARGUMENT, AppConstants.DATE_TIME_FORMAT_OPTIONS);
       if (this.todoItem.title.length > 70) {
         this.shortTitle = this.todoItem.title.slice(0, 70) + '...';
       } else {

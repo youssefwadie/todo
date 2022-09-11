@@ -49,12 +49,18 @@ export class AuthService {
   }
 
 
-  public logout(): void {
-
+  public logout(): Observable<boolean> {
+    this.accessToken = '';
+    this.currentUser = null;
+    return this.http.post<boolean>(environment.rootURL + AppConstants.API_ACCOUNT_LOGOUT_PATH, {}, {
+      withCredentials: true
+    }).pipe(catchError(err => {
+      return of(false);
+    })).pipe(map(next => true));
   }
 
+
   public setSession(authResult: HttpResponse<any>): boolean {
-    console.log('refreshing token..');
     const tokenHeader = authResult.headers.get('X-Access-Token');
 
     if (!tokenHeader) return false;
