@@ -179,4 +179,14 @@ public interface RoleRepository {
     @Transactional
     @Modifying
     void deleteAllUsersRolesById(Long userId);
+
+    /**
+     * Retrieves a {@link Role role} by its id.
+     *
+     * @param name must not be {@literal null}.
+     * @return the role with the given name or {@literal  Optional#empty()} if non found.
+     * @throws IllegalArgumentException in case the given {@literal id} is {@literal null}.
+     */
+    @Transactional(readOnly = true)
+    Optional<Role> findByName(String name);
 }

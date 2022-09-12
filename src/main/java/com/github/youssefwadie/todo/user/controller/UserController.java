@@ -6,10 +6,11 @@ import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.JwtService;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.security.TokenProperties;
+import com.github.youssefwadie.todo.security.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.security.exceptions.InvalidPasswordException;
 import com.github.youssefwadie.todo.security.exceptions.UserNotFoundException;
 import com.github.youssefwadie.todo.security.util.BasicValidator;
-import com.github.youssefwadie.todo.user.UserService;
+import com.github.youssefwadie.todo.user.service.UserService;
 import com.github.youssefwadie.todo.util.SimpleResponseBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,9 @@ public class UserController {
             LocalDateTime issueAt = jwtService.parseIssuedAt(jwt);
             User parsedUser = jwtService.parseUser(jwt, JwtService.TOKEN_TYPE.REFRESH);
             User userInDB = service.findById(parsedUser.getId());
+
+            if (!userInDB.isEnabled()) return unauthorizedResponse("the account is not disabled");
+
             if (userInDB.getUpdatedAt() != null && userInDB.getUpdatedAt().isAfter(issueAt)) {
                 removeRefreshTokenCookie(response);
                 return unauthorizedResponse("please re-login.");
@@ -108,6 +112,8 @@ public class UserController {
                 errors.put("newPassword", ex.getMessage());
             }
             return ResponseEntity.badRequest().body(errors);
+        } catch (ConstraintsViolationException e) {
+            return ResponseEntity.badRequest().body(e.getErrors());
         }
 
         return ResponseEntity.ok().build();

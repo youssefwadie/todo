@@ -53,6 +53,7 @@ public class SecurityConfig {
             request.antMatchers("/admin/**").hasAuthority("Admin");
             request.antMatchers(HttpMethod.GET, "/users/refresh").permitAll();
             request.antMatchers(HttpMethod.POST, "/users").permitAll();
+            request.antMatchers("/register/**").permitAll();
             request.anyRequest().authenticated();
         });
 

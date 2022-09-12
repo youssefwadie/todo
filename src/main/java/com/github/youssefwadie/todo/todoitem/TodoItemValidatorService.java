@@ -2,14 +2,12 @@ package com.github.youssefwadie.todo.todoitem;
 
 import com.github.youssefwadie.todo.model.TodoItem;
 import com.github.youssefwadie.todo.security.exceptions.ConstraintsViolationException;
-import com.github.youssefwadie.todo.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
@@ -27,7 +25,6 @@ public class TodoItemValidatorService {
 
     public static final String TODO_DEADLINE_VALIDATION_MESSAGE = "A todo deadline cannot be null or in the past";
 
-    private final UserService userService;
     public boolean isValidTitle(String title) {
         return title != null && TODO_TITLE_PATTERN.matcher(title).matches();
     }

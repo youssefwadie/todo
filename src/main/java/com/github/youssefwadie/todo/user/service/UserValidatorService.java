@@ -1,4 +1,4 @@
-package com.github.youssefwadie.todo.user;
+package com.github.youssefwadie.todo.user.service;
 
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.exceptions.ConstraintsViolationException;
@@ -29,7 +29,7 @@ public class UserValidatorService {
     private final UserRepository userRepository;
 
     public boolean isValidPassword(String password) {
-        return PASSWORD_PATTERN.matcher(password).matches();
+        return password != null && PASSWORD_PATTERN.matcher(password).matches();
     }
 
     public boolean isValidEmail(String email) {

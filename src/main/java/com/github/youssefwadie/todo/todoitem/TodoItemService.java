@@ -38,4 +38,8 @@ public class TodoItemService {
     public void setDone(Long id, Boolean done) {
         todoItemRepository.setDone(id, done);
     }
+
+    public void deleteAllByUserId(Long userId) {
+        todoItemRepository.deleteAllByUserId(userId);
+    }
 }

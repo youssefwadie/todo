@@ -14,9 +14,9 @@ public class UserRowMapper implements RowMapper<User> {
         Long id = rs.getLong("id");
         String email = rs.getString("email");
         String password = rs.getString("password");
+        boolean enabled = rs.getBoolean("enabled");
         Timestamp createdAt = rs.getTimestamp("created_at");
         Timestamp updatedAt = rs.getTimestamp("updated_at");
-
         LocalDateTime createdAtTime = createdAt.toLocalDateTime();
         LocalDateTime updatedAtTime = updatedAt != null ? updatedAt.toLocalDateTime() : null;
 
@@ -24,6 +24,7 @@ public class UserRowMapper implements RowMapper<User> {
         user.setId(id);
         user.setEmail(email);
         user.setPassword(password);
+        user.setEnabled(enabled);
         user.setCreatedAt(createdAtTime);
         user.setUpdatedAt(updatedAtTime);
 

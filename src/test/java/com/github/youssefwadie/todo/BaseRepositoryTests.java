@@ -8,7 +8,8 @@ import org.springframework.test.annotation.Rollback;
 @ComponentScan(basePackages = {"com.github.youssefwadie.todo.config",
         "com.github.youssefwadie.todo.todoitem.dao",
         "com.github.youssefwadie.todo.user.dao",
-        "com.github.youssefwadie.todo.user.role"})
+        "com.github.youssefwadie.todo.user.role",
+        "com.github.youssefwadie.todo.user.confirmationtoken.dao"})
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback

@@ -1,16 +1,19 @@
-package com.github.youssefwadie.todo.user;
+package com.github.youssefwadie.todo.user.service;
 
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.TodoUserDetails;
 import com.github.youssefwadie.todo.security.exceptions.ConstraintsViolationException;
 import com.github.youssefwadie.todo.security.exceptions.InvalidPasswordException;
 import com.github.youssefwadie.todo.security.exceptions.UserNotFoundException;
-import com.github.youssefwadie.todo.todoitem.dao.TodoItemRepository;
+import com.github.youssefwadie.todo.todoitem.TodoItemService;
 import com.github.youssefwadie.todo.user.dao.UserRepository;
+import com.github.youssefwadie.todo.user.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,11 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final TodoItemRepository todoDao;
+    private final TodoItemService todoItemService;
+    private final RoleRepository roleRepository;
 
     private final UserValidatorService userValidator;
     private final PasswordEncoder passwordEncoder;
-
 
     public User addUser(User user) throws ConstraintsViolationException {
         userValidator.validateUser(user);
@@ -36,8 +39,11 @@ public class UserService {
         return userRepository.existsById(userId);
     }
 
+    @Transactional
+    @Modifying
     public void deleteUser(User user) {
-        todoDao.deleteAllByUserId(user.getId());
+        roleRepository.deleteAllUsersRolesById(user.getId());
+        todoItemService.deleteAllByUserId(user.getId());
         userRepository.delete(user);
     }
 
@@ -46,7 +52,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("No User with id: %d was found!".formatted(userId)));
     }
 
-    public void changePassword(String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException {
+    public void changePassword(String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException, ConstraintsViolationException {
         TodoUserDetails loggedInPrincipal = (TodoUserDetails)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User loggedInUser = loggedInPrincipal.getUser();
@@ -64,7 +70,8 @@ public class UserService {
         save(databaseUser);
     }
 
-    public User save(User user) {
+    public User save(User user) throws ConstraintsViolationException {
+        userValidator.validateUser(user);
         return userRepository.save(user);
     }
 
@@ -78,7 +85,11 @@ public class UserService {
         return (List<User>) userRepository.findAll();
     }
 
+    @Transactional
+    @Modifying
     public void deleteById(Long userId) {
+        roleRepository.deleteAllUsersRolesById(userId);
+        todoItemService.deleteAllByUserId(userId);
         userRepository.deleteById(userId);
     }
 

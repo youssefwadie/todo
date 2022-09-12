@@ -7,6 +7,7 @@ import com.github.youssefwadie.todo.user.role.RoleRepository;
 import org.springframework.data.util.Streamable;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -45,7 +46,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final TodoItemRepository todoItemRepository;
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserRowMapper rowMapper;
+    private final RowMapper<User> rowMapper;
 
     public UserRepositoryImpl(JdbcTemplate jdbcTemplate, RoleRepository roleRepository, TodoItemRepository todoItemRepository) {
         this.jdbcTemplate = jdbcTemplate;
@@ -114,8 +115,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteById(Long id) {
         Assert.notNull(id, "Id must not be null!");
-        roleRepository.deleteAllUsersRolesById(id);
-        todoItemRepository.deleteAllByUserId(id);
         jdbcTemplate.update(DELETE_BY_ID_TEMPLATE, id);
     }
 
@@ -159,9 +158,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteByEmail(String email) {
         Assert.notNull(email, "Email must not be null!");
-        Optional<User> optionalUser = findByEmail(email);
-        optionalUser.ifPresent(user -> deleteById(user.getId()));
-//        jdbcTemplate.update(DELETE_BY_EMAIL_TEMPLATE, email);
+        jdbcTemplate.update(DELETE_BY_EMAIL_TEMPLATE, email);
     }
 
     @Override

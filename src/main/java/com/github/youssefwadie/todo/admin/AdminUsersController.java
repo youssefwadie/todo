@@ -2,7 +2,7 @@ package com.github.youssefwadie.todo.admin;
 
 
 import com.github.youssefwadie.todo.model.User;
-import com.github.youssefwadie.todo.user.UserService;
+import com.github.youssefwadie.todo.user.service.UserService;
 import com.github.youssefwadie.todo.util.SimpleResponseBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

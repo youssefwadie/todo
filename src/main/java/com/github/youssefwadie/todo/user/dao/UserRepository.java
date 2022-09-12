@@ -39,7 +39,7 @@ public interface UserRepository {
      *
      * @param id must not be {@literal null}.
      * @return the user with the given id or {@literal  Optional#empty()} if non found.
-     * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal id} is {@literal null}.
      */
     @Transactional(readOnly = true)
     Optional<User> findById(Long id);

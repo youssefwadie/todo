@@ -4,6 +4,7 @@ import com.github.youssefwadie.todo.model.Role;
 import org.springframework.data.util.Streamable;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -24,6 +25,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     private static final String INSERT_USER_ROLE_TEMPLATE = "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
 
     public static final String QUERY_FIND_BY_ID_TEMPLATE = "SELECT * FROM roles WHERE id = ?";
+    public static final String QUERY_FIND_BY_NAME_TEMPLATE = "SELECT * FROM roles WHERE name = ?";
     public static final String QUERY_FIND_ALL = "SELECT * FROM roles";
 
     public static final String QUERY_COUNT_ALL = "SELECT COUNT(*) FROM roles";
@@ -40,7 +42,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     private static final String DELETE_ALL_USERS_ROLES_BY_ID_TEMPLATE = "DELETE FROM users_roles WHERE user_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private final RoleRowMapper rowMapper;
+    private final RowMapper<Role> rowMapper;
 
     public RoleRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -204,5 +206,12 @@ public class RoleRepositoryImpl implements RoleRepository {
     public boolean existsById(Long id) {
         Assert.notNull(id, "Id must not be null!");
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(QUERY_CHECK_IF_EXISTS_BY_ID_TEMPLATE, Boolean.class, id));
+    }
+
+    @Override
+    public Optional<Role> findByName(String name) {
+        Assert.notNull(name, "Name must not be null!");
+        Role role = jdbcTemplate.queryForObject(QUERY_FIND_BY_NAME_TEMPLATE, rowMapper, name);
+        return role == null ? Optional.empty() : Optional.of(role);
     }
 }
