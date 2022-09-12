@@ -15,7 +15,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (request.url === (environment.rootURL + AppConstants.API_ACCOUNT_LOGIN_PATH)
-      || request.url === (environment.rootURL + AppConstants.API_REFRESH_TOKEN)) {
+      || request.url === (environment.rootURL + AppConstants.API_REFRESH_TOKEN)
+      || request.url == (environment.rootURL + AppConstants.API_REGISTRATION)) {
       return next.handle(request);
     }
 

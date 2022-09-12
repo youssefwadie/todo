@@ -45,4 +45,8 @@ export abstract class AppConstants {
   public static get API_REFRESH_TOKEN() {
     return 'users/refresh';
   }
+
+  public static get API_REGISTRATION(): string {
+    return 'register';
+  }
 }

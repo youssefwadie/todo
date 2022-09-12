@@ -1,0 +1,58 @@
+<form class="row" #registerForm="ngForm">
+  <div class="col-lg-6 offset-lg-3 p-3">
+    <div class="form-group">
+      <input
+        type="email"
+        pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+(\.[a-z]{2,4})+$"
+        class="form-control rounded p-2 mb-2"
+        id="email"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="Email Address"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <input
+        type="password"
+        class="form-control rounded p-2 mb-2"
+        id="password"
+        [(ngModel)]="password"
+        #passwordField="ngModel"
+        name="password"
+        placeholder="Password"
+        required
+        pattern=".{8,}"
+      />
+    </div>
+
+    <div *ngIf="passwordField.valid" class="form-group">
+      <input
+        (keydown.enter)="registerForm.valid && onRegister()"
+        type="password"
+        class="form-control rounded p-2 mb-2"
+        id="repeatedPassword"
+        [(ngModel)]="repeatedPassword"
+        name="repeatedPassword"
+        placeholder="Re-enter password"
+        required
+        pattern=".{8,}"
+      />
+    </div>
+
+    <div *ngIf="!validRegistration" class="alert alert-danger">
+      {{errorMessage}}
+    </div>
+
+    <div class="me-2 ms-2 float-end">
+      <button type="button" class="btn btn-primary me-3" (click)="onRegister()">
+        Sign Up
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="login()">
+        Cancel
+      </button>
+    </div>
+
+  </div>
+</form>

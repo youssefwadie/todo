@@ -12,9 +12,10 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {TodoEditComponent} from './components/todo-list/todo-edit/todo-edit.component';
 import {TodoListComponent} from './components/todo-list/todo-list.component';
 import {AuthInterceptor} from "./interceptors/auth-interceptor.service";
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, TodoDetailComponent, TodoEditComponent, TodoListComponent],
+  declarations: [AppComponent, LoginComponent, TodoDetailComponent, TodoEditComponent, TodoListComponent, RegisterComponent],
   imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, NgbModule, FontAwesomeModule, HttpClientModule],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
