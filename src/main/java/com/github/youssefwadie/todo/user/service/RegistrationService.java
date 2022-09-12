@@ -24,6 +24,6 @@ public class RegistrationService {
         user.setPassword(registrationRequest.getPassword());
         Optional<Role> defaultRole = roleRepository.findByName(DEFAULT_USER_ROLE);
         defaultRole.ifPresent(role -> user.setRoles(Collections.singletonList(role)));
-        return userService.save(user);
+        return userService.addUser(user);
     }
 }
