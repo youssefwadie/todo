@@ -27,7 +27,7 @@ public class RegistrationController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
         } catch (ConstraintsViolationException ex) {
-            return ResponseEntity.badRequest().body(ex.getErrors());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getErrors());
         }
     }
 
