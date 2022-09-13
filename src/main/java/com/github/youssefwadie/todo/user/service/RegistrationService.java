@@ -42,7 +42,7 @@ public class RegistrationService {
         newUser.setPassword(registrationRequest.getPassword());
         String confirmationToken = userService.singUpUser(newUser);
         String link = "http://localhost:8080/api/v1/registration/confirm?token=%s".formatted(confirmationToken);
-        emailSender.send(buildEmail(link), registrationRequest.getEmail());
+        emailSender.send("Confirm your email", buildEmail(link), registrationRequest.getEmail());
 
         return confirmationToken;
     }

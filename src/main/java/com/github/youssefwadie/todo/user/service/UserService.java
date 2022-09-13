@@ -33,7 +33,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final TodoItemService todoItemService;
     private final RoleRepository roleRepository;
-
     private final ConfirmationTokenService confirmationTokenService;
     private final UserValidatorService userValidator;
     private final PasswordEncoder passwordEncoder;
