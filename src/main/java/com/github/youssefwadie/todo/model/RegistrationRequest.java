@@ -3,7 +3,7 @@ package com.github.youssefwadie.todo.model;
 import lombok.Data;
 
 @Data
-public class UserRegistrationRequest {
+public class RegistrationRequest {
     private String email;
     private String password;
 

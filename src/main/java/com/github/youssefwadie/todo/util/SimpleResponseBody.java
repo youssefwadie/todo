@@ -1,6 +1,7 @@
 package com.github.youssefwadie.todo.util;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
 
@@ -36,6 +37,10 @@ public class SimpleResponseBody {
 
             this.message = "";
             this.timestamp = Instant.now();
+        }
+
+        public Builder(HttpStatus httpStatus) {
+            this(httpStatus.value(), httpStatus.getReasonPhrase());
         }
 
         public Builder setMessage(String message) {

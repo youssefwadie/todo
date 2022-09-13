@@ -82,7 +82,7 @@ public class TodoItemController {
 
     private ResponseEntity<?> notFoundTodoItem(Long id) {
         SimpleResponseBody responseBody = new SimpleResponseBody
-                .Builder(HttpStatus.NO_CONTENT.value(), HttpStatus.NOT_FOUND.getReasonPhrase())
+                .Builder(HttpStatus.NO_CONTENT)
                 .setMessage("No TodoItem with id: %d was found".formatted(id))
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);

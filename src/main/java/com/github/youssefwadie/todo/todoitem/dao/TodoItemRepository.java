@@ -17,8 +17,6 @@ public interface TodoItemRepository {
      * @throws IllegalArgumentException in case the given {@literal todoItem} is {@literal null}.
      */
 
-    @Transactional
-    @Modifying
     TodoItem save(TodoItem todoItem);
 
     /**
@@ -29,7 +27,6 @@ public interface TodoItemRepository {
      * as the {@literal Iterable} passed as an argument.
      * @throws IllegalArgumentException in case the given {@link Iterable todoItems} or one of its todoItems is {@literal null}.
      */
-    @Transactional
     Iterable<TodoItem> saveAll(Iterable<TodoItem> todoItems);
 
     /**
@@ -39,7 +36,6 @@ public interface TodoItemRepository {
      * @return the user with the given email or {@literal  Optional#empty()} if non found.
      * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
-    @Transactional(readOnly = true)
     Optional<TodoItem> findById(Long id);
 
     /**
@@ -49,7 +45,6 @@ public interface TodoItemRepository {
      * @return {@literal true} if a todoItem with the given id exists, {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */
-    @Transactional(readOnly = true)
     boolean existsById(Long id);
 
     /**
@@ -57,7 +52,6 @@ public interface TodoItemRepository {
      *
      * @return all todoItems
      */
-    @Transactional(readOnly = true)
     Iterable<TodoItem> findAll();
 
 
@@ -72,7 +66,6 @@ public interface TodoItemRepository {
      * {@literal ids}.
      * @throws IllegalArgumentException in case the given {@link Iterable ids} or one of its items is {@literal null}.
      */
-    @Transactional(readOnly = true)
     Iterable<TodoItem> findAllById(Iterable<? extends Long> ids);
 
     /**
@@ -80,7 +73,6 @@ public interface TodoItemRepository {
      *
      * @return the number of todoItems.
      */
-    @Transactional(readOnly = true)
     long count();
 
     /**
@@ -89,8 +81,6 @@ public interface TodoItemRepository {
      * @param id must not be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal id} is {@literal null}
      */
-    @Transactional
-    @Modifying
     void deleteById(Long id);
 
 
@@ -100,8 +90,6 @@ public interface TodoItemRepository {
      * @param todoItem must not be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal id} is {@literal null} or {@literal not null} but {@literal the todoItem's} id {@literal null}
      */
-    @Transactional
-    @Modifying
     void delete(TodoItem todoItem);
 
     /**
@@ -110,8 +98,6 @@ public interface TodoItemRepository {
      * @param ids must not be {@literal null}. Must not contain {@literal null} elements.
      * @throws IllegalArgumentException in case the given {@literal ids} or one of its todoItems is {@literal null}.
      */
-    @Transactional
-    @Modifying
     void deleteAllById(Iterable<? extends Long> ids);
 
 
@@ -121,15 +107,11 @@ public interface TodoItemRepository {
      * @param todoItems must not be {@literal null}. Must not contain {@literal null} elements.
      * @throws IllegalArgumentException in case the given {@literal todoItems} or one of the todoItems is {@literal null}.
      */
-    @Transactional
-    @Modifying
     void deleteAll(Iterable<TodoItem> todoItems);
 
     /**
      * Deletes all todoItems.
      */
-    @Transactional
-    @Modifying
     void deleteAll();
 
     /**
@@ -139,7 +121,6 @@ public interface TodoItemRepository {
      * @return all the todoItems for given user by their id
      * @throws IllegalArgumentException in case the given id is null
      */
-    @Transactional(readOnly = true)
     Iterable<TodoItem> findAllByUserId(Long userId);
 
     /**
@@ -148,8 +129,6 @@ public interface TodoItemRepository {
      * @param userId must not be {@literal null}
      * @throws IllegalArgumentException if the userId is {@literal null}
      */
-    @Modifying
-    @Transactional
     void deleteAllByUserId(Long userId);
 
     /**
@@ -159,7 +138,6 @@ public interface TodoItemRepository {
      * @return the number of todoItems for a given user
      * @throws IllegalArgumentException if userId is {@literal null}
      */
-    @Transactional(readOnly = true)
     long countByUserId(Long userId);
 
     /**
@@ -170,7 +148,6 @@ public interface TodoItemRepository {
      * @return {@literal true} if a todoItem with the given id, belongs to the user with the given id {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null} or {@literal userId} is {@literal null}.
      */
-    @Transactional(readOnly = true)
     boolean ownedByUser(Long id, Long userId);
 
     /**

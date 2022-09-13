@@ -2,7 +2,6 @@ package com.github.youssefwadie.todo.security;
 
 import com.github.youssefwadie.todo.security.filters.JWTGeneratorFilter;
 import com.github.youssefwadie.todo.security.filters.JWTValidatorFilter;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +52,7 @@ public class SecurityConfig {
             request.antMatchers("/admin/**").hasAuthority("Admin");
             request.antMatchers(HttpMethod.GET, "/users/refresh").permitAll();
             request.antMatchers(HttpMethod.POST, "/users").permitAll();
-            request.antMatchers("/register/**").permitAll();
+            request.antMatchers("/registration/**").permitAll();
             request.anyRequest().authenticated();
         });
 

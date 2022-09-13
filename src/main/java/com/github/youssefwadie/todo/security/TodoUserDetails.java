@@ -34,10 +34,6 @@ public class TodoUserDetails implements UserDetails {
         return authorities;
     }
 
-    public List<String> getSimpleAuthorities() {
-        return user.getRoles().stream().map(Role::getName).toList();
-    }
-
     @Override
     public String getPassword() {
         return user.getPassword();

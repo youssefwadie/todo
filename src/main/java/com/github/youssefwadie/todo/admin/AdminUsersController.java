@@ -29,8 +29,8 @@ public class AdminUsersController {
 
         userService.deleteById(userId);
         SimpleResponseBody responseBody = new SimpleResponseBody
-                .Builder(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase())
-                .setMessage("user with id = %d deleted.".formatted(userId))
+                .Builder(HttpStatus.OK)
+                .setMessage("user with id, %d deleted.".formatted(userId))
                 .build();
 
         return ResponseEntity.ok(responseBody);

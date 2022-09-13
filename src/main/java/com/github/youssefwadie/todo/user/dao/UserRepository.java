@@ -1,8 +1,6 @@
 package com.github.youssefwadie.todo.user.dao;
 
 import com.github.youssefwadie.todo.model.User;
-import org.springframework.data.jdbc.repository.query.Modifying;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -15,8 +13,6 @@ public interface UserRepository {
      * @return the saved user; will never be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
-    @Transactional
-    @Modifying
     User save(User user);
 
 
@@ -29,8 +25,6 @@ public interface UserRepository {
      * @throws IllegalArgumentException in case the given {@link Iterable users} or one of its users is
      *                                  {@literal null}.
      */
-    @Transactional
-    @Modifying
     Iterable<User> saveAll(Iterable<User> users);
 
 
@@ -41,7 +35,6 @@ public interface UserRepository {
      * @return the user with the given id or {@literal  Optional#empty()} if non found.
      * @throws IllegalArgumentException in case the given {@literal id} is {@literal null}.
      */
-    @Transactional(readOnly = true)
     Optional<User> findById(Long id);
 
 
@@ -50,7 +43,6 @@ public interface UserRepository {
      *
      * @return all users
      */
-    @Transactional(readOnly = true)
     Iterable<User> findAll();
 
     /**
@@ -65,7 +57,6 @@ public interface UserRepository {
      * @throws IllegalArgumentException in case the given {@link Iterable ids} or one of its items is {@literal null}.
      */
 
-    @Transactional(readOnly = true)
     Iterable<User> findAllById(Iterable<Long> ids);
 
     /**
@@ -73,7 +64,6 @@ public interface UserRepository {
      *
      * @return the number of users.
      */
-    @Transactional(readOnly = true)
     long count();
 
     /**
@@ -82,8 +72,6 @@ public interface UserRepository {
      * @param id must not be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal id} is {@literal null}
      */
-    @Transactional
-    @Modifying
     void deleteById(Long id);
 
     /**
@@ -92,8 +80,6 @@ public interface UserRepository {
      * @param user must not be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal user} is {@literal null} or {@literal not null} but {@literal the user's} email and password are {@literal null}
      */
-    @Transactional
-    @Modifying
     void delete(User user);
 
     /**
@@ -103,8 +89,6 @@ public interface UserRepository {
      * @throws IllegalArgumentException in case the given {@literal ids} or one of its users is {@literal null}.
      */
 
-    @Transactional
-    @Modifying
     void deleteAllById(Iterable<? extends Long> ids);
 
 
@@ -114,15 +98,11 @@ public interface UserRepository {
      * @param users must not be {@literal null}. Must not contain {@literal null} elements.
      * @throws IllegalArgumentException in case the given {@literal users} or one of the users is {@literal null}.
      */
-    @Transactional
-    @Modifying
     void deleteAll(Iterable<? extends User> users);
 
     /**
      * Deletes all users.
      */
-    @Transactional
-    @Modifying
     void deleteAll();
 
 
@@ -133,7 +113,6 @@ public interface UserRepository {
      * @return the user with the given email or {@link Optional#empty()} if non found.
      * @throws IllegalArgumentException in case the given {@literal user} is {@literal null}.
      */
-    @Transactional(readOnly = true)
     Optional<User> findByEmail(String email);
 
 
@@ -144,7 +123,6 @@ public interface UserRepository {
      * @return {@literal true} if a user with the given id exists, {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */
-    @Transactional(readOnly = true)
     boolean existsById(Long id);
 
 
@@ -155,7 +133,6 @@ public interface UserRepository {
      * @return {@literal true} if a user with the given email exists, {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */
-    @Transactional(readOnly = true)
     boolean existsByEmail(String email);
 
     /**
@@ -164,8 +141,6 @@ public interface UserRepository {
      * @param email must not be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal email} is {@literal null}
      */
-    @Transactional
-    @Modifying
     void deleteByEmail(String email);
 
     /**
@@ -174,7 +149,5 @@ public interface UserRepository {
      * @param status new user status must
      * @throws IllegalArgumentException in case the given {@literal id}
      */
-    @Transactional
-    @Modifying
     void updateUserStatus(Long id, boolean status);
 }

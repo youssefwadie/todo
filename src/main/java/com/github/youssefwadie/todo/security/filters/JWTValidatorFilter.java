@@ -51,8 +51,7 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(context);
             } catch (Exception e) {
                 log.error("Error while logging in: {}", e.getMessage());
-                SimpleResponseBody simpleResponseBody = new SimpleResponseBody.Builder(HttpStatus.UNAUTHORIZED.value(),
-                        HttpStatus.UNAUTHORIZED.getReasonPhrase()).setMessage(e.getMessage()).build();
+                SimpleResponseBody simpleResponseBody = new SimpleResponseBody.Builder(HttpStatus.UNAUTHORIZED).setMessage(e.getMessage()).build();
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 

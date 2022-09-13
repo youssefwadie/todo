@@ -1,6 +1,9 @@
 package com.github.youssefwadie.todo.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +16,7 @@ public class ConfirmationToken {
     private final String token;
     private boolean confirmed;
     private final LocalDateTime createdAt;
-    private final LocalDateTime expiresAt;
+    private final LocalDateTime expiredAt;
     private final Long userId;
 
 }

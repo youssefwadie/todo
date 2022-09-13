@@ -6,7 +6,7 @@ A Simple Todo Application with Spring Boot and Angular.
   * Login :heavy_check_mark:
   * Todos list :heavy_check_mark:
   * Edit/Add form :heavy_check_mark:
-  * Signup
+  * Signup :heavy_check_mark:
   * Minimal admin dashboard
 
 * Back-end

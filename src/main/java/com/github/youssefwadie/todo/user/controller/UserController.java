@@ -66,7 +66,7 @@ public class UserController {
             String accessToken = jwtService.generatedAccessToken(userInDB.getId(), userInDB.getEmail(), simpleAuthorities);
 
             SimpleResponseBody token = new SimpleResponseBody
-                    .Builder(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase())
+                    .Builder(HttpStatus.OK)
                     .setMessage("access token is refreshed, can be found in header: %s`".formatted(tokenProperties.getAccessTokenHeaderNameGeneratedByServer()))
                     .build();
 
@@ -75,7 +75,7 @@ public class UserController {
                     .body(token);
         } catch (Exception ex) {
             SimpleResponseBody error = new SimpleResponseBody
-                    .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                    .Builder(HttpStatus.UNAUTHORIZED)
                     .setMessage(ex.getMessage())
                     .build();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
@@ -134,7 +134,7 @@ public class UserController {
 
     private ResponseEntity<Object> unauthorizedResponse(String message) {
         SimpleResponseBody simpleResponseBody = new SimpleResponseBody
-                .Builder(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .Builder(HttpStatus.UNAUTHORIZED)
                 .setMessage(message)
                 .build();
 

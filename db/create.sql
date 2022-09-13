@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `tododb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-USE `tododb`;
 -- MariaDB dump 10.19  Distrib 10.9.2-MariaDB, for Linux (x86_64)
 --
 -- Host: 127.0.0.1    Database: tododb
@@ -26,9 +24,9 @@ DROP TABLE IF EXISTS `confirmation_tokens`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `confirmation_tokens` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `token` char(6) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime(6) NOT NULL,
-  `expires_at` datetime(6) NOT NULL,
+  `expired_at` datetime(6) NOT NULL,
   `confirmed` bit(1) DEFAULT b'0',
   `user_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
@@ -88,7 +86,7 @@ CREATE TABLE `users` (
   `enabled` bit(1) DEFAULT b'0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,4 +115,4 @@ CREATE TABLE `users_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-09-12 22:00:59
+-- Dump completed on 2022-09-13 17:28:30

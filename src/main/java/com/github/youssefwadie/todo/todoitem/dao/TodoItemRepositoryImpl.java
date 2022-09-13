@@ -1,12 +1,14 @@
 package com.github.youssefwadie.todo.todoitem.dao;
 
 import com.github.youssefwadie.todo.model.TodoItem;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.util.Streamable;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.sql.PreparedStatement;
@@ -56,6 +58,8 @@ public class TodoItemRepositoryImpl implements TodoItemRepository {
 
 
     @Override
+    @Transactional
+    @Modifying
     public TodoItem save(TodoItem todoItem) {
         Assert.notNull(todoItem, "Todo must not be null!");
         if (todoItem.getId() != null) {
@@ -85,6 +89,7 @@ public class TodoItemRepositoryImpl implements TodoItemRepository {
     }
 
     @Override
+    @Transactional
     public Iterable<TodoItem> saveAll(Iterable<TodoItem> todoItems) {
         Assert.notNull(todoItems, "todoItems must not be null!");
         return Streamable.of(todoItems)
@@ -94,6 +99,7 @@ public class TodoItemRepositoryImpl implements TodoItemRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<TodoItem> findById(Long id) {
         Assert.notNull(id, "Id must not be null!");
         TodoItem todoItem = jdbcTemplate.queryForObject(QUERY_FIND_BY_ID_TEMPLATE, rowMapper, id);
@@ -104,6 +110,7 @@ public class TodoItemRepositoryImpl implements TodoItemRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsById(Long id) {
         Assert.notNull(id, "Id must not be null!");
         Boolean exists = jdbcTemplate.queryForObject(QUERY_CHECK_IF_EXISTS_BY_ID_TEMPLATE, Boolean.class, id);
@@ -111,11 +118,13 @@ public class TodoItemRepositoryImpl implements TodoItemRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Iterable<TodoItem> findAll() {
         return jdbcTemplate.query(QUERY_FIND_ALL, rowMapper);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Iterable<TodoItem> findAllById(Iterable<? extends Long> ids) {
         Assert.notNull(ids, "IDs must not be null");
         List<TodoItem> todoItems = new ArrayList<>();
@@ -123,50 +132,67 @@ public class TodoItemRepositoryImpl implements TodoItemRepository {
         return todoItems;
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public long count() {
         Long itemsCount = jdbcTemplate.queryForObject(QUERY_COUNT_ALL, Long.class);
         return itemsCount == null ? 0 : itemsCount;
     }
 
+    @Transactional
+    @Modifying
     public void deleteById(Long id) {
         Assert.notNull(id, "Id must not be null!");
         jdbcTemplate.update(DELETE_BY_ID_TEMPLATE, id);
     }
 
+    @Override
+    @Transactional
+    @Modifying
     public void deleteAll(Iterable<TodoItem> todoItems) {
         Assert.notNull(todoItems, "todoItems must not be null!");
         todoItems.forEach(this::delete);
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void delete(TodoItem todo) {
         Assert.notNull(todo, "Todo must not be null!");
         deleteById(todo.getId());
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void deleteAllById(Iterable<? extends Long> ids) {
         ids.forEach(this::deleteById);
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void deleteAll() {
         jdbcTemplate.update(DELETE_ALL);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Iterable<TodoItem> findAllByUserId(Long userId) {
         Assert.notNull(userId, "User id must not be null!");
         return jdbcTemplate.query(QUERY_FIND_BY_USER_ID_TEMPLATE, rowMapper, userId);
     }
 
     @Override
+    @Modifying
+    @Transactional
     public void deleteAllByUserId(Long userId) {
         Assert.notNull(userId, "User id must not be null!");
         jdbcTemplate.update(DELETE_ALL_BY_USER_ID_TEMPLATE, userId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long countByUserId(Long userId) {
         Assert.notNull(userId, "User id must not be null!");
         Long count = jdbcTemplate.queryForObject(QUERY_COUNT_ALL_BY_USER_ID_TEMPLATE, Long.class, userId);
@@ -174,6 +200,7 @@ public class TodoItemRepositoryImpl implements TodoItemRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean ownedByUser(Long id, Long userId) {
         Assert.notNull(id, "Id must not be null!");
         Assert.notNull(userId, "User id must not be null!");
@@ -182,6 +209,7 @@ public class TodoItemRepositoryImpl implements TodoItemRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void setDone(Long id, boolean done) {
         jdbcTemplate.update(UPDATE_TODO_ITEM_SET_DONE_BY_ID_TEMPLATE,
                 done,

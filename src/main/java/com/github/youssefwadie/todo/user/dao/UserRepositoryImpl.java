@@ -2,8 +2,8 @@ package com.github.youssefwadie.todo.user.dao;
 
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.security.util.BasicValidator;
-import com.github.youssefwadie.todo.todoitem.dao.TodoItemRepository;
 import com.github.youssefwadie.todo.user.role.RoleRepository;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.util.Streamable;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,19 +43,18 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String UPDATE_USER_STATUS_BY_ID_TEMPLATE = "UPDATE users SET enabled = ? WHERE id = ?";
 
     private final RoleRepository roleRepository;
-    private final TodoItemRepository todoItemRepository;
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<User> rowMapper;
 
-    public UserRepositoryImpl(JdbcTemplate jdbcTemplate, RoleRepository roleRepository, TodoItemRepository todoItemRepository) {
+    public UserRepositoryImpl(JdbcTemplate jdbcTemplate, RoleRepository roleRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.roleRepository = roleRepository;
-        this.todoItemRepository = todoItemRepository;
         this.rowMapper = new UserRowMapper();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> findByEmail(String email) {
         Assert.notNull(email, "Email must not be null!");
         User user = jdbcTemplate.queryForObject(QUERY_FIND_BY_EMAIL_TEMPLATE, rowMapper, email);
@@ -67,6 +66,8 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
+    @Transactional
+    @Modifying
     public Iterable<User> saveAll(Iterable<User> users) {
         Assert.notNull(users, "Users must not be null!");
         return Streamable.of(users)
@@ -76,6 +77,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> findById(Long id) {
         Assert.notNull(id, "Id must not be null!");
         User user = jdbcTemplate.queryForObject(QUERY_FIND_BY_ID_TEMPLATE, rowMapper, id);
@@ -88,17 +90,20 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsById(Long id) {
         Assert.notNull(id, "Id must not be null!");
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(QUERY_CHECK_IF_EXISTS_BY_ID_TEMPLATE, Boolean.class, id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Iterable<User> findAll() {
         return jdbcTemplate.query(QUERY_FIND_ALL, rowMapper);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Iterable<User> findAllById(Iterable<Long> ids) {
         Assert.notNull(ids, "IDs must not be null");
         List<User> users = new LinkedList<>();
@@ -107,18 +112,23 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long count() {
         Long usersCount = jdbcTemplate.queryForObject(QUERY_COUNT_ALL, Long.class);
         return usersCount == null ? 0 : usersCount;
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void deleteById(Long id) {
         Assert.notNull(id, "Id must not be null!");
         jdbcTemplate.update(DELETE_BY_ID_TEMPLATE, id);
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void delete(User user) {
         Assert.notNull(user, "User must not be null!");
         if (user.getId() != null) {
@@ -134,28 +144,36 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void deleteAllById(Iterable<? extends Long> ids) {
         ids.forEach(this::deleteById);
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void deleteAll(Iterable<? extends User> users) {
         users.forEach(this::delete);
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void deleteAll() {
         jdbcTemplate.update(DELETE_ALL);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByEmail(String email) {
         Assert.notNull(email, "Email must not be null!");
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(QUERY_CHECK_IF_EXISTS_BY_EMAIL_TEMPLATE, Boolean.class, email));
     }
 
-    // TODO: optimize it a bit.
     @Override
+    @Transactional
+    @Modifying
     public void deleteByEmail(String email) {
         Assert.notNull(email, "Email must not be null!");
         jdbcTemplate.update(DELETE_BY_EMAIL_TEMPLATE, email);
@@ -163,6 +181,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     @Transactional
+    @Modifying
     public User save(User user) {
         Assert.notNull(user, "The saved user must not be null!");
 
@@ -194,6 +213,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional
+    @Modifying
     public void updateUserStatus(Long id, boolean status) {
         jdbcTemplate.update(UPDATE_USER_STATUS_BY_ID_TEMPLATE, status, id);
     }

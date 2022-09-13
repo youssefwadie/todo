@@ -12,9 +12,9 @@ public class ConfirmationTokenRepositoryImplTest extends BaseRepositoryTests {
     void testInsertingConfirmationToken() {
 //        final long userId = 1L;
 //        final LocalDateTime createdAt = LocalDateTime.now();
-//        final LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(15);
+//        final LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
 //        final String token = RandomStringUtils.random(6, true, true);
-//        final var confirmationToken = new ConfirmationToken(token, createdAt, expiresAt, userId);
+//        final var confirmationToken = new ConfirmationToken(token, createdAt, expiredAt, userId);
 //        confirmationTokenRepository.save(confirmationToken);
 //
 //        Optional<ConfirmationToken> confirmationInDB = confirmationTokenRepository.findById(1L);

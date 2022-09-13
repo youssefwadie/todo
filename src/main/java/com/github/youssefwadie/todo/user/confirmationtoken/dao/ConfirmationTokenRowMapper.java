@@ -13,7 +13,7 @@ public class ConfirmationTokenRowMapper implements RowMapper<ConfirmationToken> 
                 rs.getString("token"),
                 rs.getBoolean("confirmed"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
-                rs.getTimestamp("expires_at").toLocalDateTime(),
+                rs.getTimestamp("expired_at").toLocalDateTime(),
                 rs.getLong("user_id"));
     }
 }

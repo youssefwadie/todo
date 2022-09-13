@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
@@ -41,11 +42,13 @@ public class UserValidatorService {
         final Map<String, String> errors = new HashMap<>();
         final String userEmail = user.getEmail();
         if (!isValidEmail(userEmail)) {
-            errors.put("email", "Not a valid email");
+            errors.put("email", "Invalid email, please try different one");
         } else {
-            boolean emailAlreadyExists = userRepository.existsByEmail(userEmail);
-            if (emailAlreadyExists) {
-                errors.put("email", "the email %s is already owned by another account".formatted(userEmail));
+            if (user.getId() != null) {
+                // NOT a new user
+                if (!isUniqueEmail(user)) errors.put("email", "already taken");
+            } else {
+                if (userRepository.existsByEmail(userEmail)) errors.put("email", "already taken");
             }
         }
 
@@ -59,6 +62,24 @@ public class UserValidatorService {
         if (!errors.isEmpty()) {
             throw new ConstraintsViolationException(errors);
         }
+    }
+
+    private boolean isUniqueEmail(User user) {
+        String userEmail = user.getEmail();
+        Optional<User> userOptionalFromTheDB = userRepository.findById(user.getId());
+        // unlikely to happen
+        if (userOptionalFromTheDB.isEmpty()) {
+            throw new IllegalArgumentException("the passed user's id is not in the database");
+        }
+
+        User userFromTheDB = userOptionalFromTheDB.get();
+
+        // password changed
+        if (!userFromTheDB.getEmail().equals(user.getEmail())) {
+            return !userRepository.existsByEmail(userEmail);
+        }
+
+        return true;
     }
 
 }
