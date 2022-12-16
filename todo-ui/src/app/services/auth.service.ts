@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+kimport {Injectable} from '@angular/core';
 import {User} from '../model/User';
 import {HttpClient, HttpEvent, HttpResponse} from '@angular/common/http';
 import {environment} from '../../environments/environment';
@@ -19,7 +19,7 @@ export class AuthService {
     return this.http
       .post<User>(
         environment.rootURL + AppConstants.API_ACCOUNT_LOGIN_PATH,
-        user,
+        {},
         {
           observe: 'response',
           withCredentials: true,

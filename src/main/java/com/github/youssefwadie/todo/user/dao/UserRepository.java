@@ -78,7 +78,7 @@ public interface UserRepository {
      * Deletes the given user.
      *
      * @param user must not be {@literal null}.
-     * @throws IllegalArgumentException in case the given {@literal user} is {@literal null} or {@literal not null} but {@literal the user's} email and password are {@literal null}
+     * @throws IllegalArgumentException in case the given {@literal user} is {@literal null} or {@literal not null} but {@literal the user's} email and id are {@literal null}
      */
     void delete(User user);
 
