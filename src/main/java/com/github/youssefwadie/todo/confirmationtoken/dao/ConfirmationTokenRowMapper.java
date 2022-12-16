@@ -1,4 +1,4 @@
-package com.github.youssefwadie.todo.user.confirmationtoken.dao;
+package com.github.youssefwadie.todo.confirmationtoken.dao;
 
 import com.github.youssefwadie.todo.model.ConfirmationToken;
 import org.springframework.jdbc.core.RowMapper;

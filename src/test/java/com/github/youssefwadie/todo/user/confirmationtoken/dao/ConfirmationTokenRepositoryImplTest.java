@@ -1,6 +1,7 @@
 package com.github.youssefwadie.todo.user.confirmationtoken.dao;
 
 import com.github.youssefwadie.todo.BaseRepositoryTests;
+import com.github.youssefwadie.todo.confirmationtoken.dao.ConfirmationTokenRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

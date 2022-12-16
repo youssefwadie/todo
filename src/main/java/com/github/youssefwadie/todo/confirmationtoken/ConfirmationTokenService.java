@@ -1,7 +1,7 @@
-package com.github.youssefwadie.todo.user.confirmationtoken;
+package com.github.youssefwadie.todo.confirmationtoken;
 
+import com.github.youssefwadie.todo.confirmationtoken.dao.ConfirmationTokenRepository;
 import com.github.youssefwadie.todo.model.ConfirmationToken;
-import com.github.youssefwadie.todo.user.confirmationtoken.dao.ConfirmationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

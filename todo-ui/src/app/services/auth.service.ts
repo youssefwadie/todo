@@ -1,4 +1,4 @@
-kimport {Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {User} from '../model/User';
 import {HttpClient, HttpEvent, HttpResponse} from '@angular/common/http';
 import {environment} from '../../environments/environment';

@@ -14,7 +14,7 @@ spring.mail:
 app:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    jdbc-url: jdbc:mariadb://localhost:3306/tododb
+    jdbc-url: jdbc:mariadb://localhost:3306/todo
     username: appuser
     password: password
     maximum-pool-size: 15

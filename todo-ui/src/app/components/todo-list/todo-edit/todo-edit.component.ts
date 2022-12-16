@@ -25,15 +25,15 @@ export class TodoEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.formTodoItem = Object.assign({}, this.todoItem);
-
     let deadline = this.formTodoItem.deadline;
     if (deadline) {
       deadline = new Date(deadline);
     } else {
       deadline = new Date();
     }
-    this.time = {hour: deadline.getUTCHours(), minute: deadline.getUTCMinutes(), second: deadline.getUTCSeconds()};
-    this.date = {year: deadline.getFullYear(), month: deadline.getMonth() + 1, day: deadline.getUTCDate()}
+
+    this.time = {hour: deadline.getHours(), minute: deadline.getMinutes(), second: deadline.getHours()};
+    this.date = {year: deadline.getFullYear(), month: deadline.getMonth(), day: deadline.getUTCDate()};
 
     this.checkIfTitleIsValid();
   }
@@ -43,6 +43,7 @@ export class TodoEditComponent implements OnInit {
     this.formTodoItem.description = this.formTodoItem.description.trim();
 
     this.formTodoItem.deadline = new Date(this.date.year, this.date.month, this.date.day, this.time.hour, this.time.minute, this.time.second);
+    console.log(this.formTodoItem.deadline);
     if (this.formTodoItem.id != null) {
       this.todoListService.updateTodo(this.formTodoItem)
         .subscribe({

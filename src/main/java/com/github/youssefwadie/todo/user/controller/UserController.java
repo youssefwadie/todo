@@ -18,9 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +34,14 @@ public class UserController {
     private final TokenProperties tokenProperties;
     private final JwtService jwtService;
 
-    @PostMapping(value = "/login", produces = "application/json")
+    @PostMapping(path = {"/login", "/login/"}, produces = "application/json")
     public ResponseEntity<User> login() {
         TodoUserDetails loggedInPrincipal = (TodoUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.status(HttpStatus.OK).body(loggedInPrincipal.getUser());
     }
 
 
-    @GetMapping(value = "/refresh")
+    @GetMapping(path = {"/refresh", "/refresh/"})
     public ResponseEntity<Object> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         Cookie refreshTokenCookie = getAccessTokenCookie(request.getCookies());
 
@@ -82,14 +82,14 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "logout")
+    @PostMapping(path = {"/logout", "/logout/"}, produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> logout(HttpServletResponse response) {
         removeRefreshTokenCookie(response);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
-    @PutMapping(value = "/change-password", consumes = "application/json", produces = "application/json")
+    @PutMapping(path = {"/change-password", "/change-password/"}, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) throws UserNotFoundException {
 
         Map<String, String> errors = new HashMap<>();

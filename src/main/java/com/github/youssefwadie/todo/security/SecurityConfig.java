@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
-//@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableConfigurationProperties(TokenProperties.class)
 public class SecurityConfig {
 
@@ -46,13 +47,12 @@ public class SecurityConfig {
 
         http.addFilterBefore(jwtValidatorFilter(), BasicAuthenticationFilter.class);
         http.addFilterAfter(jwtGeneratorFilter(), BasicAuthenticationFilter.class);
-        http.authorizeRequests();
-
-        http.authorizeRequests(request -> {
-            request.antMatchers("/admin/**").hasAuthority("Admin");
-            request.antMatchers(HttpMethod.GET, "/users/refresh").permitAll();
-            request.antMatchers(HttpMethod.POST, "/users").permitAll();
-            request.antMatchers("/registration/**").permitAll();
+        http.authorizeHttpRequests(request -> {
+            request.requestMatchers("/admin/**").hasAuthority("Admin");
+            request.requestMatchers(HttpMethod.GET, "/users/refresh").permitAll();
+            request.requestMatchers(HttpMethod.POST, "/users").permitAll();
+            request.requestMatchers("/registration/**").permitAll();
+            request.requestMatchers("/error").permitAll();
             request.anyRequest().authenticated();
         });
 

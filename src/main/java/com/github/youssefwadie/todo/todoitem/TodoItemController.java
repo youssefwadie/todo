@@ -24,14 +24,14 @@ public class TodoItemController {
     private final TodoItemService todoItemService;
 
 
-    @GetMapping(value = "", produces = "application/json")
+    @GetMapping(path = {"", "/"}, produces = "application/json")
     public ResponseEntity<List<TodoItem>> list() {
         User loggedUser = getLoggedUser();
         return ResponseEntity.ok(todoItemService.findAllByUserId(loggedUser.getId()));
     }
 
 
-    @PostMapping(path = "", produces = "application/json", consumes = "application/json")
+    @PostMapping(path = {"", "/"}, produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> createTodo(@RequestBody TodoItem todo) throws URISyntaxException {
         try {
             if (todo.getId() != null) return ResponseEntity.badRequest().build();
@@ -46,7 +46,7 @@ public class TodoItemController {
         }
     }
 
-    @GetMapping(path = "/{id:\\d+}")
+    @GetMapping(path = {"/{id:\\d+}", "/{id:\\d+}/"})
     public ResponseEntity<?> getTodoById(@PathVariable("id") Long id) {
         User loggedUser = getLoggedUser();
         if (todoItemService.notOwnedByUser(id, loggedUser.getId())) {
@@ -59,7 +59,7 @@ public class TodoItemController {
         return ResponseEntity.ok(optionalTodoItem.get());
     }
 
-    @PutMapping("")
+    @PutMapping(path = {"", "/"})
     public ResponseEntity<?> updateTodoItem(@RequestBody TodoItem todoItem) throws ConstraintsViolationException {
         User loggedUser = getLoggedUser();
         if (todoItem.getId() == null) return ResponseEntity.badRequest().build();
@@ -69,7 +69,7 @@ public class TodoItemController {
         return ResponseEntity.ok(todoItemService.save(todoItem));
     }
 
-    @PutMapping(path = "/{id:\\d+}/{done:true|false}")
+    @PutMapping(path = {"/{id:\\d+}/{done:true|false}", "/{id:\\d+}/{done:true|false}/"})
     public ResponseEntity<?> updateTodoItemStatus(@PathVariable("id") Long id, @PathVariable("done") boolean done) {
         User loggedUser = getLoggedUser();
 

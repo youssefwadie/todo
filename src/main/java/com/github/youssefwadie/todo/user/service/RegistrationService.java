@@ -5,13 +5,12 @@ import com.github.youssefwadie.todo.model.ConfirmationToken;
 import com.github.youssefwadie.todo.model.User;
 import com.github.youssefwadie.todo.model.RegistrationRequest;
 import com.github.youssefwadie.todo.security.exceptions.ConstraintsViolationException;
-import com.github.youssefwadie.todo.user.confirmationtoken.ConfirmationTokenService;
+import com.github.youssefwadie.todo.confirmationtoken.ConfirmationTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RequiredArgsConstructor

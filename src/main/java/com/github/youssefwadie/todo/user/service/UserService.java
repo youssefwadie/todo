@@ -8,7 +8,7 @@ import com.github.youssefwadie.todo.security.exceptions.ConstraintsViolationExce
 import com.github.youssefwadie.todo.security.exceptions.InvalidPasswordException;
 import com.github.youssefwadie.todo.security.exceptions.UserNotFoundException;
 import com.github.youssefwadie.todo.todoitem.TodoItemService;
-import com.github.youssefwadie.todo.user.confirmationtoken.ConfirmationTokenService;
+import com.github.youssefwadie.todo.confirmationtoken.ConfirmationTokenService;
 import com.github.youssefwadie.todo.user.dao.UserRepository;
 import com.github.youssefwadie.todo.user.role.RoleRepository;
 import lombok.RequiredArgsConstructor;

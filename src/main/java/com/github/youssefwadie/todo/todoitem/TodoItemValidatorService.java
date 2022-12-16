@@ -5,6 +5,7 @@ import com.github.youssefwadie.todo.security.exceptions.ConstraintsViolationExce
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,12 +30,14 @@ public class TodoItemValidatorService {
         return title != null && TODO_TITLE_PATTERN.matcher(title).matches();
     }
 
+    private final Clock clock;
+
     public boolean isValidDescription(String description) {
         return description != null && TODO_DESCRIPTION_PATTERN.matcher(description).matches();
     }
 
     public boolean isValidDeadline(LocalDateTime deadline) {
-        return deadline != null && deadline.isBefore(LocalDateTime.now());
+        return deadline != null && deadline.isAfter(LocalDateTime.now(clock));
     }
 
     public void validateTodo(TodoItem todo, boolean checkDate) throws ConstraintsViolationException {
